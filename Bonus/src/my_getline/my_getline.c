@@ -62,6 +62,7 @@ static char *read_line(void)
         c = getchar();
         if (c == 'q')
             break;
+        // system("clear");
         printf("%c", c);
     }
     return 0;
