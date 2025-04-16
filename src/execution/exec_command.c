@@ -41,7 +41,7 @@ static int binary_in_path(char *comand, char *dir_path)
     if (!file_path)
         return FAIL;
     if (my_strncmp(comand, "./", 2) == 0)
-        return SUCCESS;
+        return FAIL;
     file_path[0] = '\0';
     my_strcat(file_path, dir_path);
     my_strcat(file_path, "/");
