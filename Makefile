@@ -14,6 +14,7 @@ SRC = 	main.c							\
 		src/shell_loop.c				\
 		src/execution/exec_command.c	\
 		src/execution/exec_builtin.c	\
+		src/execution/error_case.c		\
 		src/print_signal.c				\
 		src/redirector/input.c			\
 		src/redirector/output.c			\

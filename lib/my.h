@@ -66,6 +66,8 @@ char *my_strncpy(char *dest, char const *src, int n);
 char *my_strstr(char *str, char const *to_find);
 char *my_strupcase(char *str);
 int my_putstr(const char *str);
+int len_without_char(char *str, char c);
+char *clean_str(char *str, char c);
 
 size_t my_array_len(char **array);
 void print_array(char **array);

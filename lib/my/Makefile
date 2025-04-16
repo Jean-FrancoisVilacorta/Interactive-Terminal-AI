@@ -20,6 +20,8 @@ SRC	=	str/my_putchar.c				\
 		str/my_strncpy.c				\
 		str/my_strstr.c					\
 		str/my_strupcase.c				\
+		str/clean_str.c					\
+		str/len_without_char.c			\
 		nbr/my_alphanum.c				\
 		nbr/my_compute_power_rec.c		\
 		nbr/my_compute_square_root.c	\

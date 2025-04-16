@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <sys/wait.h>
+#include <stdbool.h>
 
 static char **get_allow_path(char **env)
 {
@@ -100,7 +101,6 @@ static int execute_command(char *command_line, char ***env, int *status)
     char **commands = my_str_to_word_arr(command_line, " \t");
 
     if (!commands || !commands[0]){
-        my_dprintf(STDERR_FD, "failed to get command\n");
         return FAIL;
     }
     if (exec_builtin(commands, env) == SUCCESS)
@@ -145,14 +145,12 @@ char *check_builtin_in_pipe(char *cmd)
 
 int exec_all_commands(char *command_line, char ***env)
 {
-    int status = 0;
     char **all_commands = my_str_to_word_arr(command_line, ";");
     bintree_t *tree = NULL;
+    int status = is_command_valid(all_commands);
 
-    if (!all_commands || !all_commands[0]){
-        my_dprintf(STDERR_FD, "failed to get all_command\n");
-        return FAIL;
-    }
+    if (status != 0)
+        return status;
     for (size_t i = 0; all_commands[i]; i++) {
         all_commands[i] = check_builtin_in_pipe(all_commands[i]);
         tree = fill_tree(all_commands[i]);
