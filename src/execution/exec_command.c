@@ -12,6 +12,12 @@
 #include <fcntl.h>
 #include <sys/wait.h>
 
+void print_array(char **array)
+{
+    for (size_t i = 0; array[i]; i++)
+        my_dprintf(0, "[ %s ]\n", array[i]);
+}
+
 static char **get_allow_path(char **env)
 {
     char *path_variable = NULL;
@@ -31,21 +37,20 @@ static int binary_in_path(char *comand, char *dir_path)
 {
     char *file_path = malloc(sizeof(char) *
         (my_strlen(comand) + my_strlen(dir_path) + 2));
-    int fd = 0;
 
     if (!file_path)
         return FAIL;
+    if (my_strncmp(comand, "./", 2) == 0)
+        return SUCCESS;
     file_path[0] = '\0';
     my_strcat(file_path, dir_path);
     my_strcat(file_path, "/");
     my_strcat(file_path, comand);
-    fd = open(file_path, O_RDONLY);
-    if (fd == FAIL){
+    if (access(file_path, F_OK) != 0) {
         free(file_path);
         return FAIL;
     }
     free(file_path);
-    close(fd);
     return SUCCESS;
 }
 
@@ -65,7 +70,7 @@ static char *find_binary(char **env, char **commands)
     char **allow_path = get_allow_path(env);
     char *path = NULL;
 
-    for (int i = 0; commands[0][0] != '/' && allow_path[i]; i++){
+    for (size_t i = 0; commands[0][0] != '/' && allow_path[i]; i++){
         if (binary_in_path(commands[0], allow_path[i]) == SUCCESS){
             path = concat_path(allow_path[i], commands);
             break;
