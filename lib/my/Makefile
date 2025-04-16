@@ -31,6 +31,8 @@ SRC	=	str/my_putchar.c				\
 		nbr/my_rev_nbr.c				\
 		array/my_show_word_array.c		\
 		array/my_str_to_word_array.c	\
+		array/print_array.c				\
+		array/my_array_len.c			\
 		dprintf/my_dprint.c				\
 		dprintf/print_function.c		\
 

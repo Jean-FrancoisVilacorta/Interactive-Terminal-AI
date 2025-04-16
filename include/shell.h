@@ -22,6 +22,7 @@
     #include <stdlib.h>
     #include "my.h"
     #include "bintree.h"
+    #include <string.h>
 
 typedef struct builtin_s {
     char *name;

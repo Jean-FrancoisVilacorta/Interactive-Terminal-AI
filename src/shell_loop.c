@@ -18,7 +18,7 @@ int shell_loop(char ***env, int is_tty)
 
     while (OPEN){
         if (is_tty)
-            my_dprintf(STDOUT_FD, "$>");
+            my_dprintf(STDOUT_FD, "$> ");
         getline(&command, &n, stdin);
         command[my_strlen(command) - 1] = '\0';
         if (!my_strcmp(command, "exit") ||

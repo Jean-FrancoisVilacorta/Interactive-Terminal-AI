@@ -12,12 +12,6 @@
 #include <fcntl.h>
 #include <sys/wait.h>
 
-void print_array(char **array)
-{
-    for (size_t i = 0; array[i]; i++)
-        my_dprintf(0, "[ %s ]\n", array[i]);
-}
-
 static char **get_allow_path(char **env)
 {
     char *path_variable = NULL;
@@ -135,6 +129,20 @@ int execute_tree(bintree_t *tree, char ***env, int *status)
     return *status;
 }
 
+char *check_builtin_in_pipe(char *cmd)
+{
+    char **cmd_in_array = my_str_to_word_arr(cmd, "|");
+    size_t len_array = my_array_len(cmd_in_array);
+
+    if (!cmd_in_array || !len_array)
+        return cmd;
+    for (size_t i = 0; builtin_command[i].name; i++)
+        if (strstr(cmd_in_array[len_array - 1], builtin_command[i].name)) {
+            return cmd_in_array[len_array - 1];
+        }
+    return cmd;
+}
+
 int exec_all_commands(char *command_line, char ***env)
 {
     int status = 0;
@@ -145,7 +153,8 @@ int exec_all_commands(char *command_line, char ***env)
         my_dprintf(STDERR_FD, "failed to get all_command\n");
         return FAIL;
     }
-    for (size_t i = 0; all_commands[i]; i++){
+    for (size_t i = 0; all_commands[i]; i++) {
+        all_commands[i] = check_builtin_in_pipe(all_commands[i]);
         tree = fill_tree(all_commands[i]);
         if (!tree)
             return 84;
