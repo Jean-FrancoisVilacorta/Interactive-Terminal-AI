@@ -1,112 +1,75 @@
 /*
 ** EPITECH PROJECT, 2025
-** Minishell (Workspace)
+** header
 ** File description:
-** shell
+** minishell
 */
 
-#include <stddef.h>
-#include <stdbool.h>
-#include <signal.h>
-#include <sys/types.h>
-
-#ifndef INCLUDED_SHELL_H
-    #define INCLUDED_SHELL_H
-    #define FAIL 1
-    #define SUCCESS 0
+#ifndef HEADER
+    #define HEADER
     #define EXIT_ERROR 84
     #define EXIT_SUCCESS 0
-    #define STOP_ERROR -1
+    #define FAIL -1
+    #define SUCCESS 0
+    #define STDOUT_FD 1
+    #define STDERR_FD 2
+    #define OPEN 1
+    #define CONTINUE 2
+    #define WRITE 1
+    #define READ 0
+    #define NB_REDIRECTOR 6
+    #define UNUSED __attribute_maybe_unused__
+    #include <stdlib.h>
+    #include "my.h"
+    #include "bintree.h"
 
-typedef struct redirections_s {
-    char *flag;
-}redirections_t;
+typedef struct builtin_s {
+    char *name;
+    int(*func)();
+} builtin_t;
 
-static const redirections_t redirections[] = {
-    {">"},
-    {">>"},
-    {"<"},
-    {"<<"},
-    {"|"},
-    {NULL},
+typedef struct redirector_s {
+    char *redirector;
+    int (*function)(bintree_t *node, char ***env, int *status);
+}redirector_t;
+
+int my_pipe(bintree_t *node, char ***env, int *status);
+int redirect_input(bintree_t *node, char ***env, int *status);
+int redirect_output(bintree_t *node, char ***env, int *status);
+int redirect_output_double(bintree_t *node, char ***env, int *status);
+int redirect_err_output(bintree_t *node, char ***env, int *status);
+
+static const redirector_t redirectors[NB_REDIRECTOR] = {
+    {">", &redirect_output},
+    {">>", &redirect_output_double},
+    {"<", &redirect_input},
+    {"<<", NULL},
+    {"|", &my_pipe},
+    {"2>", &redirect_err_output}
 };
 
-typedef struct command_s {
-    char *command;
-    char **ouput;
-    char *flag;
-    int fd;
-    struct command_s *next;
-    struct command_s *before;
-} command_t;
+int exec_all_commands(char *command_line, char ***env);
+int shell_loop(char ***env, int is_tty);
+int exec_builtin(char **commands, char ***env);
+char *get_variable_from_command(char **command);
+char *get_variable_name(char *commands);
+char *get_env_variable(char **env, char *name);
+int exist_in_env(char ***env, char *commands);
+int builtin_env(char ***env);
+int builtin_setenv(char ***env, char **commands);
+int builtin_unsetenv(char ***env, char **commands);
+int builtin_cd(char ***env, char **commands);
+int print_signal(int status);
+int execute_tree(bintree_t *tree, char ***env, int *status);
 
-typedef struct dividers_s {
-    char *flag;
-    struct command_s *commands;
-    struct dividers_s *next;
-} dividers_t;
-
-
-typedef struct shell_s {
-    char **env;
-    char *pwd;
-    char *oldpwd;
-    char *home;
-    char **path;
-    int exit;
-    struct dividers_s *dividers;
-}shell_t;
-
-struct flag_s {
-    char *command;
-    int (*func)(shell_t *shell, command_t *command);
+static const builtin_t builtin_command[5] = {
+    {"cd", &builtin_cd},
+    {"env", &builtin_env},
+    {"setenv", &builtin_setenv},
+    {"unsetenv", &builtin_unsetenv},
+    {NULL, NULL}
 };
 
-int env(shell_t *shell, command_t *command);
-int cdirectory(shell_t *shell, command_t *command);
-int exit_shell(shell_t *shell, command_t *command);
-int my_unsetenv(shell_t *shell, command_t *command);
-int my_setenv(shell_t *shell, command_t *command);
-int default_command(shell_t *shell, command_t *command);
-
-static const struct flag_s flag[] = {
-    {"exit", exit_shell},
-    {"cd", cdirectory},
-    {"env", env},
-    {"unsetenv", my_unsetenv},
-    {"setenv", my_setenv},
-    {"\n", NULL},
-};
-
-int prepare_shell(char const *const *env);
-void double_free(char **array);
-void free_shell(shell_t *shell);
-void free_dividers(dividers_t *div);
-void free_commands(command_t *commands);
-dividers_t *struct_commands(char const *str, char *a);
-bool search_redir(char const *str);
-bool search_dividers(char const *str);
-bool correct_format(char **arr, int i, bool separators, bool pipes);
-int organize_command_struct(char **arr, int i, command_t *command);
-char *get_env(char const *src, char const *const *env);
-int get_env_x(char const *src, char const *const *env);
-char *get_env_data(char const *src, char const *const *env);
-int analyze_ouput(shell_t *shell, char *ouput);
-int print_env(int const fd, char const *const *env);
-int set_env(shell_t *shell, char **ouputs);
-char **get_path(char const *const *env);
-char *my_str_cmb_pwd(const char *str1, const char *str2);
-int execute_commands(shell_t *shell, command_t *command, int prev_fd);
-int pipe_command(shell_t *shell, command_t *command, int prev_fd);
-int redirect_to_file(shell_t *shell, command_t *command, int prev_fd);
-int run_prog(shell_t *shell, command_t *command);
-int error_wait(const pid_t status, shell_t *shell,
-    command_t *command, int new_fd);
-int redirect_to_file_and_append(shell_t *shell,
-    command_t *command, int prev_fd);
-int send_file_to_exec(shell_t *shell, command_t *command,
-    int prev_fd);
-int read_to_exec(shell_t *shell, command_t *command, int prev_fd);
-int default_info(shell_t *shell, char const *const *env);
+bintree_t *fill_tree(char *commands);
 
 #endif

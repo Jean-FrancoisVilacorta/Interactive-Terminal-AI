@@ -1,70 +1,61 @@
 ##
-## EPITECH PROJECT, 2025
+## EPITECH PROJECT, 2023
 ## Makefile
 ## File description:
 ## Write a makefile for MiniShell1
 ##
 
-SRC =	src/main.c	\
-	src/shell.c 	\
-	src/ouput/analyze_ouput.c	\
-	src/ouput/correct_format.c	\
-	src/ouput/struct_commands.c	\
-	src/free/free.c	\
-	src/env/env.c		\
-	src/env/setenv.c	\
-	src/env/get_path.c	\
-	src/env/unsetenv.c	\
-	src/env/get_env.c	\
-	src/commands/redirect_pipe.c	\
-	src/commands/redirect_to_file.c	\
-	src/commands/append_to_file.c	\
-	src/commands/default_command.c	\
-	src/commands/change_directory.c	\
-	src/commands/send_file_to_exec.c	\
-	src/commands/read_to_exec.c 	\
-	src/default_data/default_data.c 	\
+SRC = 	main.c							\
+		src/builtin/get_env_var.c		\
+		src/builtin/cd.c				\
+		src/builtin/env.c				\
+		src/builtin/setenv.c			\
+		src/builtin/unsetenv.c			\
+		src/shell_loop.c				\
+		src/execution/exec_command.c	\
+		src/execution/exec_builtin.c	\
+		src/print_signal.c				\
+		src/redirector/input.c			\
+		src/redirector/output.c			\
+		src/redirector/pipe.c			\
+		src/redirector/error.c			\
+		src/fill_tree.c					\
 
 OBJ = $(SRC:.c=.o)
 
-CFLAGS = -Wall -Wextra -g3
+CPPFLAGS = -iquote ./include/ -iquote ./lib/
 
-CPPFLAGS = -iquote ./include/
+CFLAGS = -Wall -Wextra
 
-LDFLAGS = -L. -lmy
+LDLIBS = -lmy -lbintree
 
-INCLUDE = -I ./include/
+LDFLAGS = -L lib/
+
+VALGRIND_FLAG	= --track-origins=yes --leak-check=full --show-leak-kinds=all
 
 NAME = mysh
 
-MAKE = make
-
-all: clib make_c
-
-clib:
-	 cd lib ; make re; cd ..
-
-make_c: $(NAME)
+all:	build_lib $(NAME)
 
 $(NAME): $(OBJ)
-	gcc $(OBJ) -o $(NAME) $(INCLUDE) $(CFLAGS) $(LDFLAGS)
+	$(CC) $(OBJ) -o $(NAME)  $(CFLAGS) $(LDFLAGS) $(LDLIBS)
+
+build_lib:
+	$(MAKE) -C lib/my
+	$(MAKE) -C lib/bintree
+
+valgrind: build_lib $(OBJ)
+	$(CC) $(OBJ) -o $(NAME) $(CFLAGS) $(LDFLAGS) $(LDLIBS) -g
+	valgrind $(VALGRIND_FLAG) ./$(NAME)
 
 clean:
-	rm -f $(OBJ)
-	cd lib/ ; make clean ; cd ..
+	$(MAKE) -C lib/my clean
+	$(MAKE) -C lib/bintree clean
+	$(RM) $(OBJ)
 
 fclean: clean
-	rm -f $(NAME)
-	cd lib/ ; make fclean ; cd ..
+	$(MAKE) -C lib/my fclean
+	$(MAKE) -C lib/bintree fclean
+	$(RM) $(NAME)
 
 re: fclean all
-
-unit_tests: re
-	gcc -o unit_tests tests/test.c --coverage -lcriterion
-	gcc -o unit_tests tests/test.c --coverage -lcriterion
-
-tests_run:
-	./unit_tests
-
-clean_test: fclean
-	rm *.gcno ; rm *.gcda ; rm unit_tests
