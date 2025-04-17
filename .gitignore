@@ -1,0 +1,6 @@
+*.o
+*.a
+mysh
+tester.sh
+tests
+toust
