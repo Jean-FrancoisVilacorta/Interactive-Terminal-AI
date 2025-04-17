@@ -52,12 +52,33 @@ static int add_env(char ***env, char **command)
     return SUCCESS;
 }
 
+int is_valid_env_name(const char *name)
+{
+    if (!name || !*name || (*name >= '0' && *name <= '9')) {
+        my_dprintf(STDERR_FD, "setenv: "
+            "Variable name must begin with a letter.\n");
+        return FAIL;
+    }
+    for (int i = 0; name[i]; i++) {
+        if (!(name[i] == '_' ||
+            (name[i] >= 'a' && name[i] <= 'z') ||
+            (name[i] >= 'A' && name[i] <= 'Z') ||
+            (i > 0 && name[i] >= '0' && name[i] <= '9'))) {
+            my_dprintf(2, "setenv: Variable name must contain "
+                "alphanumeric characters.\n");
+            return FAIL;
+        }
+    }
+    return SUCCESS;
+}
+
 int builtin_setenv(char ***env, char **commands)
 {
     char *variable = NULL;
     int nb_command = len_word_arr(commands);
 
-    if (nb_command > 3 || nb_command <= 1)
+    if (nb_command > 3 || nb_command <= 1 ||
+        is_valid_env_name(commands[1]) == FAIL)
         return FAIL;
     variable = get_variable_name(commands[1]);
     for (int i = 0; (*env)[i]; i++){

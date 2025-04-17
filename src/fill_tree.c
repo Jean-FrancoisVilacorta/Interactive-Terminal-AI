@@ -94,7 +94,7 @@ bintree_t *fill_tree(char *commands)
     for (int i = len - 1; i >= 0; i--){
         if (check_redirector(commands, i, &root) == FAIL){
             free_bintree(tmp);
-            my_dprintf(STDERR_FD, "failed redirector\n");
+            my_dprintf(STDERR_FD, "failed redirector.\n");
             return NULL;
         }
     }

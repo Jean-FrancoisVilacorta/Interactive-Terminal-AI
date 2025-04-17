@@ -21,6 +21,7 @@ SRC = 	main.c							\
 		src/redirector/pipe.c			\
 		src/redirector/error.c			\
 		src/fill_tree.c					\
+		src/execution/file_access.c		\
 
 OBJ = $(SRC:.c=.o)
 

@@ -76,4 +76,6 @@ static const builtin_t builtin_command[5] = {
 
 bintree_t *fill_tree(char *commands);
 
+
+int check_file_access(char *path);
 #endif
