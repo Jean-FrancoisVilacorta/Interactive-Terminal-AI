@@ -8,6 +8,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>
+#include <sys/ioctl.h>
 
 #ifndef INCLUDED_SHELL_H
     #define INCLUDED_SHELL_H
@@ -36,6 +37,7 @@
     #define BG_CYAN      "\033[46m"
     #define BG_WHITE     "\033[47m"
     #define BOLD         "\033[1m"
+    #define GET_LINES_NEEDED(len, width) (((len) + (width) - 1) / (width))
 
 typedef struct line_h {
     char *usr;
@@ -45,10 +47,31 @@ typedef struct line_h {
     char *branch;
     char *first_line;
     char *name;
-    int len;
+    size_t len;
 } line_t;
+
+typedef struct history_t {
+    char *str;
+    size_t id;
+    char *temp;
+    struct history_t *next;
+    struct history_t *before;
+} history_t;
 
 char *my_getline(char *path);
 struct line_h get_data(char *path);
+struct history_t *get_history(void);
+void free_history(struct history_t *history);
+void free_data(struct line_h *data);
+bool special_key(struct line_h *data, struct history_t **history,
+    char c, struct history_t *buff);
+struct history_t *change_the_buff(struct history_t *buff,
+    struct history_t *history);
+struct history_t *add_new_buff(struct history_t *history);
+int get_termianl_len(void);
+void print_buff(struct line_h *data, struct history_t *buff);
+void print_line(struct line_h *data, struct history_t *buff);
+void print_info(struct line_h *data);
+void remove_lines(int n);
 
 #endif

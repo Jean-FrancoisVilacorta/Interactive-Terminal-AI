@@ -15,7 +15,30 @@
 #include <locale.h>
 #include <sys/stat.h>
 #include <limits.h>
+#include <termios.h>
+#include <unistd.h>
+#include <sys/ioctl.h>
+#include <string.h>
 #include "lib.h"
+
+struct termios oldt, newt;
+
+void free_data(struct line_h *data)
+{
+    if (data->time != NULL)
+        free(data->time);
+    if (data->git == true)
+        free(data->branch);
+}
+
+int get_termianl_len(void)
+{
+    struct winsize w;
+
+    if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) == -1)
+        return -1;
+    return w.ws_col;
+}
 
 static char *read_path_line(char *line)
 {

@@ -5,9 +5,12 @@
 ## Write a makefile for MiniShell1
 ##
 
-SRC =	src/main.c 	\
-	src/my_getline/my_getline.c	\
-	src/my_getline/get_data.c	\
+SRC =	src/main.c 						\
+	src/my_getline/my_getline.c			\
+	src/my_getline/get_data.c			\
+	src/my_getline/get_history.c		\
+	src/my_getline/special_keys.c		\
+	src/my_getline/print_info.c		\
 
 OBJ = $(SRC:.c=.o)
 

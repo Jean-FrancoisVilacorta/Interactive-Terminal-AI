@@ -4,6 +4,10 @@
         "string.h": "c",
         "unistd.h": "c",
         "time.h": "c",
-        "cstdlib": "c"
+        "cstdlib": "c",
+        "lib.h": "c",
+        "my_getline.h": "c",
+        "ioctl.h": "c",
+        "stdbool.h": "c"
     }
 }

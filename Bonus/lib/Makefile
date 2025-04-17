@@ -15,6 +15,7 @@ SRC = src/my_strlen.c			\
 	src/my_realloc.c			\
 	src/my_str_cmb.c			\
 	src/add_new_line.c			\
+	src/open_file.c				\
 
 OBJ = $(SRC:.c=.o)
 

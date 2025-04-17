@@ -6,19 +6,15 @@
 */
 
 #include "my_getline.h"
-
-
-
-static void simulate_shell(void)
-{
-    return 0;
-}
+#include <unistd.h>
 
 int main(void)
 {
     char path[140];
+    char *line = NULL;
 
     if (getcwd(path, sizeof(path)) == NULL)
         return 84;
-    my_getline(path);
+    line = my_getline(path);
+    free(line);
 }

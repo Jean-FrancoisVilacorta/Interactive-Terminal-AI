@@ -6,76 +6,100 @@
 */
 
 #include "my_getline.h"
+#include "lib.h"
 #include <stdio.h>
 #include <termios.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
 #include <string.h>
 
-struct termios oldt, newt;
-
-static void activate_raw(void)
-{
-    tcgetattr(STDIN_FILENO, &oldt);
-    newt = oldt;
-    newt.c_lflag &= ~(ICANON | ECHO);
-    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
-}
-
-static int get_termianl_len(void)
+int get_terminal_width(void)
 {
     struct winsize w;
 
-    if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) == -1)
-        return -1;
+    ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
     return w.ws_col;
 }
 
-void print_line(struct line_h *data)
+static void desactivate_termianl(struct termios *old_termios)
 {
-    int len = data->len;
-    char spaces[len];
+    struct termios new_termios;
 
-    printf("%s%s~%s%s", BOLD, MAGENTA, data->path, RESET);
-    if (data->git == true) {
-        printf(" %s%sgit:(%s%s%s)%s",
-            BOLD, GREEN, YELLOW, data->branch, GREEN, RESET);
-        len = len - 6 - strlen(data->branch);
-    }
-    len = len - strlen(data->path + 1) - strlen(data->time) - 3;
-    spaces[0] = '\0';
-    for (size_t i = 0; len > 0; i++) {
-        spaces[i] = ' ';
-        spaces[i + 1] = '\0';
-        len--;
-    }
-    printf("%s%s\n", spaces, data->time);
-    printf("˚₊%s%s%s· ͟͟͞͞➳❥ ", BLUE, data->usr, RESET);
+    tcgetattr(STDIN_FILENO, old_termios);
+    new_termios = *old_termios;
+    new_termios.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &new_termios);
 }
 
-static char *read_line(void)
+struct history_t *change_the_buff(struct history_t *buff,
+    struct history_t *history)
+{
+    if (history->before != NULL)
+        return change_the_buff(buff, history->before);
+    if (buff->str != NULL)
+        free(buff->str);
+    buff->str = buff->temp;
+    buff->temp = NULL;
+    return history;
+}
+
+static bool add_to_buffer(struct history_t *buff,
+    struct history_t **history, char c)
+{
+    size_t size = 0;
+
+    if (buff->temp != NULL)
+        (*history) = change_the_buff(buff, *history);
+    buff->str = my_realloc(buff->str);
+    size = my_strlen(buff->str);
+    if (buff->str == NULL)
+        return false;
+    buff->str[size] = c;
+    buff->str[size + 1] = '\0';
+    return true;
+}
+
+static bool analize_char(struct line_h *data, char c,
+    struct history_t *buff, struct history_t **history)
+{
+    if (!special_key(data, history, c, buff))
+        if (!add_to_buffer(buff, history, c))
+            return false;
+    return true;
+}
+
+static char *read_line(struct line_h *data,
+    struct history_t *buff, struct history_t *history)
 {
     char c = '\0';
 
-    activate_raw();
     while (1) {
         c = getchar();
-        if (c == 'q')
+        print_line(data, buff);
+        if (!analize_char(data, c, buff, &history))
+            return NULL;
+        print_buff(data, buff);
+        if (c == '\n' || c == '\0')
             break;
-        // system("clear");
-        printf("%c", c);
     }
-    return 0;
+    return buff->str;
 }
 
 char *my_getline(char *path)
 {
+    struct termios old_termios;
     struct line_h data = get_data(path);
+    struct history_t *history = get_history();
+    struct history_t *new = add_new_buff(history);
     char *ret = NULL;
 
     data.len = get_termianl_len();
-    print_line(&data);
-    ret = read_line();
-    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+    desactivate_termianl(&old_termios);
+    print_info(&data);
+    ret = read_line(&data, new, new);
+    tcsetattr(STDIN_FILENO, TCSANOW, &old_termios);
+    free_history(history->next);
+    free(history);
+    free_data(&data);
     return ret;
 }

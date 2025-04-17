@@ -23,7 +23,7 @@ char *my_getlinea(void)
     size_t size = 0;
 
     while (read(0, &c, 1) > 0) {
-        buffer = my_realloc(buffer, size + 2);
+        buffer = my_realloc(buffer);
         buffer[size] = c;
         if (c == '\n' || c == '\0')
             return end(buffer, size);

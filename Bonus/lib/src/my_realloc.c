@@ -8,23 +8,35 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
+#include "lib.h"
 
-char *my_realloc(char *str, size_t size)
+static char *make_bigger(char *str, size_t size)
 {
-    char *ret = malloc(sizeof(char) * (size + 1));
+    char *ret = malloc(sizeof(char) * (size + 2));
+    size_t x = 0;
 
     if (ret == NULL)
         return NULL;
-    if (str == NULL) {
-        ret[0] = '\0';
-        ret[1] = '\0';
-        return ret;
+    if (str != NULL) {
+        while (str[x] != '\0') {
+            ret[x] = str[x];
+            x++;
+        }
     }
-    for (int i = 0; str[i] != '\0'; i++) {
-        ret[i] = str[i];
-    }
-    ret[size - 2] = '\0';
-    ret[size - 1] = '\0';
-    free(str);
+    ret[x] = '\0';
+    ret[x + 1] = '\0';
+    return ret;
+}
+
+char *my_realloc(char *str)
+{
+    size_t size = 0;
+    char *ret = NULL;
+
+    if (str != NULL)
+        size = my_strlen(str);
+    ret = make_bigger(str, size);
+    if (str != NULL)
+        free(str);
     return ret;
 }

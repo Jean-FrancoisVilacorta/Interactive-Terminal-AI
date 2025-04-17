@@ -23,7 +23,7 @@ size_t my_strlen(char const *str)
     size_t count = 0;
 
     if (str == NULL)
-        return -1;
+        return 0;
     while (str[count] != '\0')
         count++;
     return count;
