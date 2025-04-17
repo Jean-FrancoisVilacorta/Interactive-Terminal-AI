@@ -46,7 +46,7 @@ static int binary_in_path(char *comand, char *dir_path)
     my_strcat(file_path, dir_path);
     my_strcat(file_path, "/");
     my_strcat(file_path, comand);
-    if (access(file_path, F_OK) != 0) {
+    if (check_file_access(file_path) == EXIT_FAILURE) {
         free(file_path);
         return FAIL;
     }
@@ -65,17 +65,30 @@ static char *concat_path(char *allow_path, char **commands)
     return path;
 }
 
-static char *find_binary(char **env, char **commands)
+static char *find_in_path(char **commands, char **allow_path, int *found)
 {
-    char **allow_path = get_allow_path(env);
     char *path = NULL;
 
-    for (size_t i = 0; commands[0][0] != '/' && allow_path[i]; i++){
-        if (binary_in_path(commands[0], allow_path[i]) == SUCCESS){
+    for (size_t i = 0; commands[0][0] != '\0' &&
+        commands[0][0] != '/' && allow_path[i]; i++){
+        *found = binary_in_path(commands[0], allow_path[i]);
+        if (*found == SUCCESS){
             path = concat_path(allow_path[i], commands);
             break;
         }
     }
+    return path;
+}
+
+static char *find_binary(char **env, char **commands)
+{
+    char **allow_path = get_allow_path(env);
+    char *path = NULL;
+    int rtv_bin_in_path = 0;
+
+    path = find_in_path(commands, allow_path, &rtv_bin_in_path);
+    if (rtv_bin_in_path == FAIL)
+        my_dprintf(STDERR_FD, "%s: Command not found.\n", commands[0]);
     if (!path){
         path = malloc(sizeof(char) * my_strlen(commands[0]));
         if (!path)
@@ -94,7 +107,6 @@ static void child_execute(char **commands, char **env)
     if (!path)
         exit(1);
     if (execve(path, commands, env) == FAIL){
-        my_dprintf(STDERR_FD, "%s: Command not found.\n", commands[0]);
         free(path);
         exit(1);
     }
