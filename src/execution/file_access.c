@@ -11,6 +11,7 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 
+
 int check_elf_header(int fd, char *path)
 {
     Elf64_Ehdr elf_header;

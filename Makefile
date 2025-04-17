@@ -22,6 +22,7 @@ SRC = 	main.c							\
 		src/redirector/error.c			\
 		src/fill_tree.c					\
 		src/execution/file_access.c		\
+		src/execution/cmd_type.c		\
 
 OBJ = $(SRC:.c=.o)
 
