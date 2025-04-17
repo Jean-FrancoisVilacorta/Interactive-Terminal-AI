@@ -138,5 +138,6 @@ int builtin_cd(char ***env, char **commands)
         set_new_pwd(env, new_path);
         set_old_pwd(env, old_path);
     }
+
     return SUCCESS;
 }

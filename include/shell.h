@@ -22,6 +22,8 @@
     #include <stdlib.h>
     #include "my.h"
     #include "bintree.h"
+    #include <string.h>
+    #include <stdbool.h>
 
 typedef struct builtin_s {
     char *name;
@@ -48,6 +50,8 @@ static const redirector_t redirectors[NB_REDIRECTOR] = {
     {"2>", &redirect_err_output}
 };
 
+bool pipe_is_alone(char **all_commands);
+int is_command_valid(char **all_commands);
 int exec_all_commands(char *command_line, char ***env);
 int shell_loop(char ***env, int is_tty);
 int exec_builtin(char **commands, char ***env);
@@ -71,6 +75,7 @@ static const builtin_t builtin_command[5] = {
 };
 
 bintree_t *fill_tree(char *commands);
+
 
 int check_file_access(char *path);
 #endif
