@@ -36,7 +36,7 @@ LDFLAGS = -L lib/
 
 VALGRIND_FLAG	= --track-origins=yes --leak-check=full --show-leak-kinds=all
 
-NAME = mysh
+NAME = 42sh
 
 all:	build_lib $(NAME)
 
