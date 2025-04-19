@@ -14,12 +14,15 @@ SRC = 	main.c							\
 		src/shell_loop.c				\
 		src/execution/exec_command.c	\
 		src/execution/exec_builtin.c	\
+		src/execution/error_case.c		\
 		src/print_signal.c				\
 		src/redirector/input.c			\
 		src/redirector/output.c			\
 		src/redirector/pipe.c			\
 		src/redirector/error.c			\
 		src/fill_tree.c					\
+		src/execution/file_access.c		\
+		src/execution/cmd_type.c		\
 
 OBJ = $(SRC:.c=.o)
 

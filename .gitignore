@@ -1,5 +1,7 @@
 *.o
 *.a
+.vscode
+ysh
 mysh
 tester.sh
 tests
