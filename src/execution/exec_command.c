@@ -162,6 +162,7 @@ int exec_all_commands(char *line, char ***env)
         return status;
     for (size_t i = 0; cmds[i]; i++) {
         cmds[i] = check_builtin_in_pipe(cmds[i]);
+        cmds[i] = is_an_alias(cmds[i]);
         tree = fill_tree(cmds[i]);
         if (!tree)
             return 84;

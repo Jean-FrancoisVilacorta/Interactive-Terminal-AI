@@ -11,10 +11,13 @@ SRC = 	main.c							\
 		src/builtin/env.c				\
 		src/builtin/setenv.c			\
 		src/builtin/unsetenv.c			\
+		src/builtin/alias.c				\
+		src/builtin/unalias.c			\
 		src/shell_loop.c				\
 		src/execution/exec_command.c	\
 		src/execution/exec_builtin.c	\
 		src/execution/error_case.c		\
+		src/execution/is_an_alias.c		\
 		src/print_signal.c				\
 		src/redirector/input.c			\
 		src/redirector/output.c			\
@@ -51,6 +54,9 @@ valgrind: build_lib $(OBJ)
 	$(CC) $(OBJ) -o $(NAME) $(CFLAGS) $(LDFLAGS) $(LDLIBS) -g
 	valgrind $(VALGRIND_FLAG) ./$(NAME)
 
+debug: CPPFLAGS += -g3
+debug: all
+
 clean:
 	$(MAKE) -C lib/my clean
 	$(MAKE) -C lib/bintree clean
@@ -61,4 +67,4 @@ fclean: clean
 	$(MAKE) -C lib/bintree fclean
 	$(RM) $(NAME)
 
-re: fclean all
+re: fclean all debug
