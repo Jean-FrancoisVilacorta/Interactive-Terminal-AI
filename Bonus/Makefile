@@ -9,9 +9,10 @@ SRC =	src/main.c 							\
 	src/my_getline/get_data.c				\
 	src/my_getline/print_info.c				\
 	src/my_getline/my_getline.c				\
-	src/my_getline/get_history.c			\
 	src/my_getline/special_keys.c			\
+	src/my_getline/history/get_history.c			\
 	src/my_getline/autocompletion/get_files.c			\
+	src/my_getline/autocompletion/autocomplete.c		\
 	src/my_getline/autocompletion/search_files.c		\
 
 OBJ = $(SRC:.c=.o)

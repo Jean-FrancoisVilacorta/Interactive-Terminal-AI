@@ -95,8 +95,10 @@ char **get_files(char *path, char *file, char **src)
         return NULL;
     entry = readdir(dir);
     while (entry != NULL) {
-        if (ignore_get_file(entry->d_name, file))
+        if (ignore_get_file(entry->d_name, file)) {
+            entry = readdir(dir);
             continue;
+        }
         files = realloc(files, sizeof(char *) * (count + 1));
         files[count] = strdup(entry->d_name);
         count++;

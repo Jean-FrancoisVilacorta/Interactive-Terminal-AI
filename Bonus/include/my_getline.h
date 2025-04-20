@@ -37,9 +37,13 @@
     #define BG_CYAN      "\033[46m"
     #define BG_WHITE     "\033[47m"
     #define BOLD         "\033[1m"
+    #define AUTOCOMPLETE 9
+    #define SPECIAL_KEY  27
+    #define ARROW        91
+    #define DELETE       127
     #define GET_LINES_NEEDED(len, width) (((len) + (width) - 1) / (width))
-
-typedef struct line_h {
+    
+    typedef struct line_h {
     char *usr;
     char *time;
     char *path;
@@ -47,6 +51,7 @@ typedef struct line_h {
     char *branch;
     char *first_line;
     char *name;
+    char **autocomplete;
     size_t len;
 } line_t;
 
@@ -76,5 +81,7 @@ void remove_lines(int n);
 int is_dir(const char *path);
 char **get_files(char *path, char *file, char **src);
 char **manager_get_file(char **src);
+bool autocomplete(struct line_h *data, struct history_t *buff,
+    struct history_t **history);
 
 #endif

@@ -16,5 +16,11 @@ int main(void)
     if (getcwd(path, sizeof(path)) == NULL)
         return 84;
     line = my_getline(path);
+    // line = strdup("/l");
+    // char **all = manager_get_file(&line);
+    // for (size_t i = 0; all[i] != NULL; i++) {
+    //     printf("%s\n", all[i]);
+    // }
+    
     free(line);
 }

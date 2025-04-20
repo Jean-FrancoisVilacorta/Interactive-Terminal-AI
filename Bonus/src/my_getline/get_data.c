@@ -138,5 +138,6 @@ struct line_h get_data(char *path)
     data.time = get_time();
     data.path = get_path(path);
     data.git = search_git(path, &data);
+    data.autocomplete = NULL;
     return data;
 }

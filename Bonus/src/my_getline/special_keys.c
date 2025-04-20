@@ -95,11 +95,13 @@ static bool key_movement(struct history_t **history,
 bool special_key(struct line_h *data, struct history_t **history,
     char c, struct history_t *buff)
 {
-    if (c == 127)
+    if (c == AUTOCOMPLETE)
+        return autocomplete(data, buff, history);
+    if (c == DELETE)
         return remove_last(buff, history);
-    if (c == 27) {
+    if (c == SPECIAL_KEY) {
         c = getchar();
-        if (c == 91) {
+        if (c == ARROW) {
             c = getchar();
             key_movement(history, c, buff);
             return true;
