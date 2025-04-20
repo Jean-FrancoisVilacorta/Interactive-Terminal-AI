@@ -43,7 +43,10 @@ void free_history(struct history_t *history)
     if (history == NULL)
         return;
     free_history(history->next);
-    free(history->str);
+    if (history->temp != NULL)
+        free(history->temp);
+    if (history->str != NULL)
+        free(history->str);
     free(history);
 }
 
@@ -59,6 +62,7 @@ static struct history_t *read_history(char **data, size_t x,
     new = malloc(sizeof(struct history_t));
     new->before = NULL;
     new->str = data[x];
+    new->temp = NULL;
     new->id = x + 1;
     if (history == NULL) {
         new->next = NULL;
@@ -81,5 +85,6 @@ struct history_t *get_history(void)
     if (file == NULL)
         return NULL;
     data = my_str_to_word_array(file, "\n");
+    free(file);
     return read_history(data, 0, NULL);
 }

@@ -73,5 +73,8 @@ void print_buff(struct line_h *data, struct history_t *buff);
 void print_line(struct line_h *data, struct history_t *buff);
 void print_info(struct line_h *data);
 void remove_lines(int n);
+int is_dir(const char *path);
+char **get_files(char *path, char *file, char **src);
+char **manager_get_file(char **src);
 
 #endif

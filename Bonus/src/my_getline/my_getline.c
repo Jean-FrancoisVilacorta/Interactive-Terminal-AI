@@ -98,8 +98,12 @@ char *my_getline(char *path)
     print_info(&data);
     ret = read_line(&data, new, new);
     tcsetattr(STDIN_FILENO, TCSANOW, &old_termios);
-    free_history(history->next);
-    free(history);
+    free_history(history);
+    // if (history->temp != NULL)
+    //     free(history->temp);
+    // free(history);
     free_data(&data);
+    free(new->temp);
+    free(new);
     return ret;
 }
