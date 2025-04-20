@@ -33,8 +33,8 @@ static void print_list_alias(alias_t **list)
 static void helper_alias(void)
 {
     printf(GRAS("USAGE\n"));
-        printf(("\talias " RED("Abbreviation")"""="""
-        BLUE("'The command to which you wish to assign an alias'")"\n"));
+        printf(("\talias " RED("Abbreviation")""" """
+        BLUE("\"The command to which you wish to assign an alias\"")"\n"));
         printf(GRAS("\nDESCRIPTION\n"));
         printf("\tThe ""alias"" command lets you add"
             "shortcuts for your commands.\n");
