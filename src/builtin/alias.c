@@ -109,12 +109,28 @@ int is_alias_invalid(alias_t **list, char **commands)
     return SUCCESS;
 }
 
+void add_new_alias(alias_t **list, char *shortcut, char *command)
+{
+    alias_t *new_nodes = NULL;
+    alias_t *current = (*list);
+
+    while (current) {
+        if (!strcmp(current->shortcut, shortcut)) {
+            current->command = command;
+            return;
+        }
+        current = current->next;
+    }
+    new_nodes = create_alias(shortcut, command);
+    new_nodes->next = (*list);
+    (*list) = new_nodes;
+}
+
 int builtin_alias(UNUSED char ***env, char **commands)
 {
     alias_t **list = get_list_alias();
     char *command = NULL;
     char *shortcut = NULL;
-    alias_t *new_nodes = NULL;
 
     if (is_alias_invalid(list, commands))
         return SUCCESS;
@@ -122,10 +138,7 @@ int builtin_alias(UNUSED char ***env, char **commands)
     command = get_alias_command(commands);
     if (!(*list))
         (*list) = create_alias(shortcut, command);
-    else {
-        new_nodes = create_alias(shortcut, command);
-        new_nodes->next = (*list);
-        (*list) = new_nodes;
-    }
+    else
+        add_new_alias(list, shortcut, command);
     return SUCCESS;
 }

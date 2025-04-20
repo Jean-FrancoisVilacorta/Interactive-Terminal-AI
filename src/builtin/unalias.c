@@ -38,8 +38,7 @@ int builtin_unalias(UNUSED char ***env, char **commands)
         printf("unalias: Too few arguments.\n");
         return EXIT_FAILURE;
     }
-    for (size_t i = 1; i < len; i++) {
+    for (size_t i = 1; i < len; i++)
         delete_alias(list, commands[i]);
-    }
     return 0;
 }

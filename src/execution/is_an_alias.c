@@ -22,7 +22,7 @@ char *is_an_alias(char *command)
 
     while (current) {
         if (!strcmp(current->shortcut, command))
-            return current->command;
+            return clean_str(clean_str(current->command, '('), ')');
         current = current->next;
     }
     return command;
