@@ -42,8 +42,15 @@
     #define ARROW        91
     #define DELETE       127
     #define GET_LINES_NEEDED(len, width) (((len) + (width) - 1) / (width))
-    
-    typedef struct line_h {
+
+typedef struct autoc_h {
+    char *str;
+    size_t type;
+    struct autoc_h *next;
+    struct autoc_h *before;
+} autoc_t;
+
+typedef struct line_h {
     char *usr;
     char *time;
     char *path;
@@ -51,8 +58,9 @@
     char *branch;
     char *first_line;
     char *name;
-    char **autocomplete;
+    struct autoc_h *autocomplete;
     size_t len;
+    size_t auto_lines;
 } line_t;
 
 typedef struct history_t {
@@ -79,9 +87,16 @@ void print_line(struct line_h *data, struct history_t *buff);
 void print_info(struct line_h *data);
 void remove_lines(int n);
 int is_dir(const char *path);
-char **get_files(char *path, char *file, char **src);
-char **manager_get_file(char **src);
+struct autoc_h *get_files(char *path, char *file, char **src);
+struct autoc_h *manager_get_file(char **src);
 bool autocomplete(struct line_h *data, struct history_t *buff,
     struct history_t **history);
+void print_auto(char *str, int max_size);
+bool my_compare_start(char *cmp, char *cmp2);
+struct autoc_h *modify_auto(struct autoc_h *files, char *str);
+void free_auto(struct autoc_h *file);
+size_t get_height(void);
+int get_max_size(struct autoc_h *file, int max_size);
+void autocomplete_lines(struct line_h *data, struct history_t *buff);
 
 #endif

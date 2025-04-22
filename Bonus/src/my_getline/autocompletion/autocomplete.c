@@ -10,16 +10,17 @@
 #include <stdio.h>
 #include <string.h>
 
-static const char stop_arg[] = 
-    {' ', '\t', '\0', ';', '&', '>', '<', '\0'};
+static const char stop_arg[] = {' ', '\t', '\0',
+    ';', '&', '>', '<', '\0'};
 
-void free_arr(char **arr)
+void free_auto(struct autoc_h *file)
 {
-    if (arr == NULL)
+    if (file == NULL)
         return;
-    for (size_t i = 0; arr[i] != NULL; i++)
-        free(arr[i]);
-    free(arr);    
+    if (file->str != NULL)
+        free(file->str);
+    free_auto(file->next);
+    free(file);
 }
 
 static bool stop(char c)
@@ -54,9 +55,9 @@ static char *get_last_path(char *str)
     char *new_str = NULL;
 
     if (str == NULL)
-        return NULL;
+        return strdup("./");
     if (str[0] == '\0')
-        return NULL;
+        return strdup("./");
     x = strlen(str) - 1;
     while (x != 0) {
         len++;
@@ -64,15 +65,20 @@ static char *get_last_path(char *str)
             break;
         x--;
     }
-    new_str = malloc(sizeof(char) * (len + 1));
+    new_str = malloc(sizeof(char) * (len + 2));
     return get_last_path2(str, new_str, x);
 }
 
 static void add_change(struct history_t *buff, char *path)
 {
-    size_t len = strlen(buff->str);
-    char *temp;
+    size_t len = 0;
+    char *temp = NULL;
 
+    if (buff->str == NULL) {
+        buff->str = my_str_cmb("./", path);
+        return;
+    }
+    len = strlen(buff->str);
     while (len != 0) {
         if (stop(buff->str[len]))
             break;
@@ -90,10 +96,10 @@ static void add_change(struct history_t *buff, char *path)
 bool autocomplete(struct line_h *data, struct history_t *buff,
     struct history_t **history)
 {
-    char **new_list = NULL;
+    struct autoc_h *new_list = NULL;
     char *path = get_last_path(buff->str);
     char *cmp = strdup(path);
-    
+
     if (buff->temp != NULL)
         (*history) = change_the_buff(buff, *history);
     new_list = manager_get_file(&path);
@@ -101,7 +107,8 @@ bool autocomplete(struct line_h *data, struct history_t *buff,
         add_change(buff, path);
     free(path);
     free(cmp);
-    free_arr(data->autocomplete);
+    if (data->autocomplete != NULL)
+        free_auto(data->autocomplete);
     data->autocomplete = new_list;
     return true;
 }

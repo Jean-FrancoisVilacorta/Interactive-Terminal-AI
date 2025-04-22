@@ -97,8 +97,11 @@ bool special_key(struct line_h *data, struct history_t **history,
 {
     if (c == AUTOCOMPLETE)
         return autocomplete(data, buff, history);
-    if (c == DELETE)
+    if (c == DELETE) {
+        free_auto(data->autocomplete);
+        data->autocomplete = NULL;
         return remove_last(buff, history);
+    }
     if (c == SPECIAL_KEY) {
         c = getchar();
         if (c == ARROW) {

@@ -1,0 +1,7 @@
+./src/my_getline/autocompletion/modify_auto.c:26: MAJOR:C-C1
+./src/my_getline/autocompletion/search_files.c:79: MINOR:C-G2
+./src/my_getline/autocompletion/search_files.c:101: MAJOR:C-F4
+./src/my_getline/autocompletion/search_files.c:102: MAJOR:C-F4
+./src/my_getline/autocompletion/search_files.c:103: MAJOR:C-F4
+./src/my_getline/autocompletion/search_files.c:104: MAJOR:C-F4
+./src/my_getline/print_info.c:114: MAJOR:C-C1

@@ -43,7 +43,7 @@ struct history_t *change_the_buff(struct history_t *buff,
     return history;
 }
 
-static bool add_to_buffer(struct history_t *buff,
+static bool add_to_buffer(struct line_h *data, struct history_t *buff,
     struct history_t **history, char c)
 {
     size_t size = 0;
@@ -56,6 +56,7 @@ static bool add_to_buffer(struct history_t *buff,
         return false;
     buff->str[size] = c;
     buff->str[size + 1] = '\0';
+    data->autocomplete = modify_auto(data->autocomplete, buff->str);
     return true;
 }
 
@@ -63,7 +64,7 @@ static bool analize_char(struct line_h *data, char c,
     struct history_t *buff, struct history_t **history)
 {
     if (!special_key(data, history, c, buff))
-        if (!add_to_buffer(buff, history, c))
+        if (!add_to_buffer(data, buff, history, c))
             return false;
     return true;
 }
@@ -82,6 +83,8 @@ static char *read_line(struct line_h *data,
         if (c == '\n' || c == '\0')
             break;
     }
+    if (data->autocomplete != NULL)
+        free_auto(data->autocomplete);
     return buff->str;
 }
 
@@ -99,9 +102,6 @@ char *my_getline(char *path)
     ret = read_line(&data, new, new);
     tcsetattr(STDIN_FILENO, TCSANOW, &old_termios);
     free_history(history);
-    // if (history->temp != NULL)
-    //     free(history->temp);
-    // free(history);
     free_data(&data);
     free(new->temp);
     free(new);

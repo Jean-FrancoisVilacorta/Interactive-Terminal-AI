@@ -24,7 +24,7 @@ int is_dir(const char *path)
     return S_ISDIR(info.st_mode);
 }
 
-static char **add_back(char **src, char *path, size_t len)
+static struct autoc_h *add_back(char **src, char *path, size_t len)
 {
     char *new = malloc(sizeof(char) * (len + 2));
 
@@ -51,7 +51,7 @@ static void copy_content_from_x(char *src, size_t x, char *cpy)
     }
 }
 
-static char **manager_path_src(char **src, char *path, int last_back)
+static struct autoc_h *manager_path_src(char **src, char *path, int last_back)
 {
     char *new = NULL;
     char temp_path[last_back + 2];
@@ -70,7 +70,7 @@ static char **manager_path_src(char **src, char *path, int last_back)
     return NULL;
 }
 
-static char **manager_src(char **src, char *path)
+static struct autoc_h *manager_src(char **src, char *path)
 {
     int last_back = -1;
 
@@ -91,7 +91,7 @@ static bool is_nothing(char *src)
     return false;
 }
 
-char **manager_get_file(char **src)
+struct autoc_h *manager_get_file(char **src)
 {
     char *path = NULL;
     size_t len = 0;

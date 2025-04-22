@@ -14,7 +14,7 @@
 #include "lib.h"
 #include "my_getline.h"
 
-static bool my_compare_start(char *cmp, char *cmp2)
+bool my_compare_start(char *cmp, char *cmp2)
 {
     if (cmp == NULL || cmp2 == NULL)
         return false;
@@ -31,6 +31,8 @@ static bool ignore_get_file(char *file, char *ignore)
         if (strcmp(file, ".") == 0 || strcmp(file, "..") == 0) {
             return true;
         }
+        if (file[0] == '.')
+            return true;
         return false;
     }
     if (my_compare_start(ignore, file))
@@ -38,73 +40,78 @@ static bool ignore_get_file(char *file, char *ignore)
     return true;
 }
 
-static char **verify_exit(char **files, char **src, char *path)
+static struct autoc_h *verify_exit(struct autoc_h *files,
+    char **src, char *path)
 {
     char *temp_path = NULL;
     char *temp = NULL;
 
-    temp_path = my_str_cmb(path, files[0]);
+    temp_path = my_str_cmb(path, files->str);
     if (temp_path == NULL)
         return files;
     if (is_dir(temp_path)) {
-        temp = my_str_cmb(files[0], "/");
-        free(files[0]);
-        files[0] = temp;
+        temp = my_str_cmb(files->str, "/");
+        free(files->str);
+        files->str = temp;
     }
     free(temp_path);
     free(*src);
-    *src = files[0];
+    *src = files->str;
     free(files);
     free(path);
     return NULL;
 }
 
-static char **get_file_2(char **files, char **src, char *path, char *file)
+static struct autoc_h *get_file_2(struct autoc_h *files, char **src,
+    char *path, char *file)
 {
     free(file);
     if (files == NULL) {
         free(path);
         return NULL;
     }
-    if (files[1] != NULL) {
+    if (files->next != NULL) {
         free(path);
         return files;
     }
     return verify_exit(files, src, path);
 }
-
-static char **verify_if_add(char **files, int count)
+static struct autoc_h *read_files(DIR *dir, char *file, struct autoc_h *files)
 {
-    if (files == NULL)
+    struct dirent *entry;
+    struct autoc_h *new;
+
+    entry = readdir(dir);
+    if (entry == NULL)
         return NULL;
-    files = realloc(files, sizeof(char *) * (count + 1));
-    if (files == NULL)
+    if (ignore_get_file(entry->d_name, file))
+        return read_files(dir, file, files);
+    new = malloc(sizeof(struct autoc_h));
+    if (new == NULL)
         return NULL;
-    files[count] = NULL;
-    return files;
+    new->str = strdup(entry->d_name);
+    new->next = NULL;
+    if (new->str == NULL) {
+        free(new);
+        return NULL;
+    }
+    if (files == NULL) {
+        new->next = read_files(dir, file, new);
+        return new;
+    }
+    new->before = files;
+    new->next = read_files(dir, file, new);
+    return new;
 }
 
-char **get_files(char *path, char *file, char **src)
+struct autoc_h *get_files(char *path, char *file, char **src)
 {
     DIR *dir = opendir(path);
-    struct dirent *entry;
-    char **files = NULL;
-    int count = 0;
+    struct autoc_h *files = NULL;
 
     if (!dir)
         return NULL;
-    entry = readdir(dir);
-    while (entry != NULL) {
-        if (ignore_get_file(entry->d_name, file)) {
-            entry = readdir(dir);
-            continue;
-        }
-        files = realloc(files, sizeof(char *) * (count + 1));
-        files[count] = strdup(entry->d_name);
-        count++;
-        entry = readdir(dir);
-    }
+    files = read_files(dir, file, NULL);
     closedir(dir);
-    files = verify_if_add(files, count);
     return get_file_2(files, src, path, file);
 }

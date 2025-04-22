@@ -139,5 +139,6 @@ struct line_h get_data(char *path)
     data.path = get_path(path);
     data.git = search_git(path, &data);
     data.autocomplete = NULL;
+    data.auto_lines = 0;
     return data;
 }
