@@ -31,7 +31,7 @@ char *get_end(char *str)
         len++;
     for (size_t i = 0; str[len] != '\0'; i++) {
         ret[i] = str[len];
-        ret[i + 1] = '\0'; 
+        ret[i + 1] = '\0';
         len++;
     }
     return ret;
