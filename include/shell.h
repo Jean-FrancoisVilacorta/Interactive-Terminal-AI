@@ -40,7 +40,7 @@ typedef struct builtin_s {
 typedef struct redirector_s {
     char *redirector;
     int (*function)(bintree_t *node, char ***env, int *status);
-}redirector_t;
+} redirector_t;
 
 typedef struct alias_s alias_t;
 struct alias_s {
@@ -83,6 +83,7 @@ int builtin_alias(UNUSED char ***env, char **commands);
 int builtin_unalias(UNUSED char ***env, char **commands);
 int print_signal(int status);
 int execute_tree(bintree_t *tree, char ***env, int *status);
+char **find_globbings(char **cmds);
 
 static const builtin_t builtin_command[7] = {
     {"cd", &builtin_cd},
