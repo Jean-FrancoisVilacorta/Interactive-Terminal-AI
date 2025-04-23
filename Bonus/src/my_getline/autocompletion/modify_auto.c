@@ -14,6 +14,29 @@
 #include "lib.h"
 #include "my_getline.h"
 
+char *get_end(char *str)
+{
+    char *ret = NULL;
+    int len = strlen(str);
+    int x = 0;
+
+    if (str == NULL || str[0] == '\0')
+        return NULL;
+    while (len != 0 && str[len] != '/') {
+        len--;
+        x++;
+    }
+    ret = malloc(sizeof(char) * (x + 1));
+    if (str[len] == '/')
+        len++;
+    for (size_t i = 0; str[len] != '\0'; i++) {
+        ret[i] = str[len];
+        ret[i + 1] = '\0'; 
+        len++;
+    }
+    return ret;
+}
+
 void count_autocomplete(struct line_h *data, size_t lines)
 {
     struct autoc_h *file = data->autocomplete;

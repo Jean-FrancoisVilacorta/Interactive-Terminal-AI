@@ -47,6 +47,7 @@ static bool add_to_buffer(struct line_h *data, struct history_t *buff,
     struct history_t **history, char c)
 {
     size_t size = 0;
+    char *last_path = NULL;
 
     if (buff->temp != NULL)
         (*history) = change_the_buff(buff, *history);
@@ -56,7 +57,11 @@ static bool add_to_buffer(struct line_h *data, struct history_t *buff,
         return false;
     buff->str[size] = c;
     buff->str[size + 1] = '\0';
-    data->autocomplete = modify_auto(data->autocomplete, buff->str);
+    last_path = get_end(buff->str);
+    if (last_path == NULL)
+        return true;
+    data->autocomplete = modify_auto(data->autocomplete, last_path);
+    free(last_path);
     return true;
 }
 
