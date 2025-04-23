@@ -13,40 +13,7 @@
 #include <sys/ioctl.h>
 #include <string.h>
 
-size_t get_height(void)
-{
-    struct winsize w;
-
-    if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) == -1) {
-        return -1;
-    }
-    return w.ws_row;
-}
-
-int get_max_size(struct autoc_h *file, int max_size)
-{
-    int temp = 0;
-
-    if (file == NULL)
-        return max_size;
-    temp = strlen(file->str);
-    if (temp > max_size)
-        max_size = temp;
-    return get_max_size(file->next, max_size);
-}
-
-void remove_lines(int n)
-{
-    for (int i = 0; i < n; i++) {
-        printf("\033[2K\r");
-        if (i < n - 1) {
-            printf("\033[1A");
-        }
-    }
-    fflush(stdout);
-}
-
-static void print_info(struct line_h *data)
+void print_info(struct line_h *data)
 {
     int len = data->len;
     char spaces[len];
@@ -68,7 +35,7 @@ static void print_info(struct line_h *data)
     printf("˚₊%s%s%s· ͟͟͞͞➳❥ ", BLUE, data->usr, RESET);
 }
 
-static void print_line(struct line_h *data, struct history_t *buff)
+void print_line(struct line_h *data, struct history_t *buff)
 {
     size_t len = 0;
     int lines = 0;
@@ -109,13 +76,13 @@ static void print_autocomplete(struct line_h *data, size_t lines)
 
     printf("\n");
     for (size_t i = 0; i != max_height; i++) {
-        for (size_t a = 0; a != how_many_str; a++) {
+        for (size_t a = 0; a != how_many_str && file != NULL; a++) {
             print_auto(file->str, max_size);
-            if (file->next == NULL) {
-                data->auto_lines = i + 1;
-                return;
-            }
             file = file->next;
+        }
+        if (file == NULL) {
+            data->auto_lines = i + 1;
+            return;
         }
         printf("\n");
     }

@@ -76,7 +76,20 @@ static struct autoc_h *get_file_2(struct autoc_h *files, char **src,
     }
     return verify_exit(files, src, path);
 }
-static struct autoc_h *read_files(DIR *dir, char *file, struct autoc_h *files)
+
+static struct autoc_h *read_files2(DIR *dir, char *file,
+    struct autoc_h *files, struct autoc_h *new)
+{
+    if (files == NULL) {
+        new->next = read_files(dir, file, new);
+        return new;
+    }
+    new->before = files;
+    new->next = read_files(dir, file, new);
+    return new;
+}
+
+struct autoc_h *read_files(DIR *dir, char *file, struct autoc_h *files)
 {
     struct dirent *entry;
     struct autoc_h *new;
@@ -95,13 +108,7 @@ static struct autoc_h *read_files(DIR *dir, char *file, struct autoc_h *files)
         free(new);
         return NULL;
     }
-    if (files == NULL) {
-        new->next = read_files(dir, file, new);
-        return new;
-    }
-    new->before = files;
-    new->next = read_files(dir, file, new);
-    return new;
+    return read_files2(dir, file, files, new);
 }
 
 struct autoc_h *get_files(char *path, char *file, char **src)

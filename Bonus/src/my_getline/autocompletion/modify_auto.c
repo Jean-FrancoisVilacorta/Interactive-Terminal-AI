@@ -22,12 +22,11 @@ void count_autocomplete(struct line_h *data, size_t lines)
     size_t how_many_str = (size_t)(data->len / max_size);
 
     for (size_t i = 0; i != max_height; i++) {
-        for (size_t a = 0; a != how_many_str; a++) {
-            if (file->next == NULL) {
-                data->auto_lines = i + 1;
-                return;
-            }
+        for (size_t a = 0; a != how_many_str && file == NULL; a++)
             file = file->next;
+        if (file == NULL) {
+            data->auto_lines = i + 1;
+            return;
         }
     }
 }

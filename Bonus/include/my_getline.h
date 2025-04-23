@@ -9,6 +9,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <sys/ioctl.h>
+#include <dirent.h>
 
 #ifndef INCLUDED_SHELL_H
     #define INCLUDED_SHELL_H
@@ -98,5 +99,6 @@ void free_auto(struct autoc_h *file);
 size_t get_height(void);
 int get_max_size(struct autoc_h *file, int max_size);
 void autocomplete_lines(struct line_h *data, struct history_t *buff);
+struct autoc_h *read_files(DIR *dir, char *file, struct autoc_h *files);
 
 #endif
