@@ -80,7 +80,7 @@ static void add_change(struct history_t *buff, char *path)
     }
     len = strlen(buff->str);
     while (len != 0) {
-        if (stop(buff->str[len]))
+        if (stop(buff->str[len]) || buff->str[len] == '/')
             break;
         len--;
     }

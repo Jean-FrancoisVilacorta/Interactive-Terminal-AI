@@ -42,7 +42,15 @@
     #define SPECIAL_KEY  27
     #define ARROW        91
     #define DELETE       127
+    #define REGULAR_FILE 0
+    #define F_DIR          1
+    #define EXEC         2
     #define GET_LINES_NEEDED(len, width) (((len) + (width) - 1) / (width))
+
+typedef struct data_h {
+    char *file;
+    char *path;
+} data_t;
 
 typedef struct autoc_h {
     char *str;
@@ -92,13 +100,14 @@ struct autoc_h *get_files(char *path, char *file, char **src);
 struct autoc_h *manager_get_file(char **src);
 bool autocomplete(struct line_h *data, struct history_t *buff,
     struct history_t **history);
-void print_auto(char *str, int max_size);
+void print_auto(char *str, int max_size, size_t type);
 bool my_compare_start(char *cmp, char *cmp2);
 struct autoc_h *modify_auto(struct autoc_h *files, char *str);
 void free_auto(struct autoc_h *file);
 size_t get_height(void);
 int get_max_size(struct autoc_h *file, int max_size);
 void autocomplete_lines(struct line_h *data, struct history_t *buff);
-struct autoc_h *read_files(DIR *dir, char *file, struct autoc_h *files);
+struct autoc_h *read_files(DIR *dir, data_t *data,
+    struct autoc_h *files);
 
 #endif

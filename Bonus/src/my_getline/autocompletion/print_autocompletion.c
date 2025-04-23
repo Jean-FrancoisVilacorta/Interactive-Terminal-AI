@@ -34,8 +34,26 @@ static void print_orange(char *str, int max_size)
     printf(" %s%-*s%s", YELLOW, max_size, str, RESET);
 }
 
-void print_auto(char *str, int max_size)
+static void print_blue(char *str, int max_size)
 {
+    printf(" %s%-*s%s", BLUE, max_size, str, RESET);
+}
+
+static void print_green(char *str, int max_size)
+{
+    printf(" %s%s%-*s%s", BOLD, GREEN, max_size, str, RESET);
+}
+
+void print_auto(char *str, int max_size, size_t type)
+{
+    if (type == F_DIR) {
+        print_blue(str, max_size);
+        return;
+    }
+    if (type == EXEC) {
+        print_green(str, max_size);
+        return;
+    }
     if (strcmp(str, "Makefile") == 0) {
         print_orange(str, max_size);
         return;

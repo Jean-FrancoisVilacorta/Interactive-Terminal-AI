@@ -8,11 +8,44 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <dirent.h>
 #include <sys/stat.h>
 #include <stdbool.h>
 #include "lib.h"
 #include "my_getline.h"
+
+static int file_type2(char *file, struct stat *st)
+{
+    if (S_ISDIR(st->st_mode)) {
+        free(file);
+        return F_DIR;
+    }
+    free(file);
+    return REGULAR_FILE;
+}
+
+static int file_type(char *path, char *str)
+{
+    struct stat st;
+    char *file = my_str_cmb(path, str);
+
+    if (file == NULL)
+        return 0;
+    if (stat(file, &st) != 0) {
+        free(file);
+        return REGULAR_FILE;
+    }
+    if (S_ISREG(st.st_mode)) {
+        if (access(file, X_OK) == 0) {
+            free(file);
+            return EXEC;
+        }
+        free(file);
+        return REGULAR_FILE;
+    }
+    return file_type2(file, &st);
+}
 
 bool my_compare_start(char *cmp, char *cmp2)
 {
@@ -77,19 +110,20 @@ static struct autoc_h *get_file_2(struct autoc_h *files, char **src,
     return verify_exit(files, src, path);
 }
 
-static struct autoc_h *read_files2(DIR *dir, char *file,
+static struct autoc_h *read_files2(DIR *dir, data_t *data,
     struct autoc_h *files, struct autoc_h *new)
 {
     if (files == NULL) {
-        new->next = read_files(dir, file, new);
+        new->next = read_files(dir, data, new);
         return new;
     }
     new->before = files;
-    new->next = read_files(dir, file, new);
+    new->next = read_files(dir, data, new);
     return new;
 }
 
-struct autoc_h *read_files(DIR *dir, char *file, struct autoc_h *files)
+struct autoc_h *read_files(DIR *dir, data_t *data,
+    struct autoc_h *files)
 {
     struct dirent *entry;
     struct autoc_h *new;
@@ -97,28 +131,30 @@ struct autoc_h *read_files(DIR *dir, char *file, struct autoc_h *files)
     entry = readdir(dir);
     if (entry == NULL)
         return NULL;
-    if (ignore_get_file(entry->d_name, file))
-        return read_files(dir, file, files);
+    if (ignore_get_file(entry->d_name, data->file))
+        return read_files(dir, data, files);
     new = malloc(sizeof(struct autoc_h));
     if (new == NULL)
         return NULL;
     new->str = strdup(entry->d_name);
+    new->type = file_type(data->path, new->str);
     new->next = NULL;
     if (new->str == NULL) {
         free(new);
         return NULL;
     }
-    return read_files2(dir, file, files, new);
+    return read_files2(dir, data, files, new);
 }
 
 struct autoc_h *get_files(char *path, char *file, char **src)
 {
     DIR *dir = opendir(path);
+    struct data_h data = {file, path};
     struct autoc_h *files = NULL;
 
     if (!dir)
         return NULL;
-    files = read_files(dir, file, NULL);
+    files = read_files(dir, &data, NULL);
     closedir(dir);
     return get_file_2(files, src, path, file);
 }

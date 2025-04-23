@@ -77,7 +77,7 @@ static void print_autocomplete(struct line_h *data, size_t lines)
     printf("\n");
     for (size_t i = 0; i != max_height; i++) {
         for (size_t a = 0; a != how_many_str && file != NULL; a++) {
-            print_auto(file->str, max_size);
+            print_auto(file->str, max_size, file->type);
             file = file->next;
         }
         if (file == NULL) {
