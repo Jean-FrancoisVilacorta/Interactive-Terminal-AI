@@ -37,6 +37,11 @@ typedef struct builtin_s {
     int(*func)();
 } builtin_t;
 
+typedef enum inhibitor_s {
+    DOUBLE_QUOTE = 1,
+    SINGLE_QUOTE = 2
+} inhibitor_t;
+
 typedef struct redirector_s {
     char *redirector;
     int (*function)(bintree_t *node, char ***env, int *status);
@@ -48,6 +53,14 @@ struct alias_s {
     char *command;
     alias_t *next;
 };
+
+typedef struct foreach_s foreach_t;
+struct foreach_s {
+    char *command;
+    foreach_t *next;
+};
+
+alias_t **get_list_alias(void);
 
 int my_pipe(bintree_t *node, char ***env, int *status);
 int redirect_input(bintree_t *node, char ***env, int *status);
@@ -64,8 +77,7 @@ static const redirector_t redirectors[NB_REDIRECTOR] = {
     {"2>", &redirect_err_output}
 };
 
-alias_t **get_list_alias(void);
-
+char *dollars_signe(char ***env, char *line);
 bool pipe_is_alone(char **all_commands);
 int is_command_valid(char **all_commands);
 int exec_all_commands(char *command_line, char ***env);
@@ -81,18 +93,25 @@ int builtin_unsetenv(char ***env, char **commands);
 int builtin_cd(char ***env, char **commands);
 int builtin_alias(UNUSED char ***env, char **commands);
 int builtin_unalias(UNUSED char ***env, char **commands);
+int builtin_repeat(char ***env, char **commands);
+int builtin_foreach(char ***env, char **commands);
 int print_signal(int status);
 int execute_tree(bintree_t *tree, char ***env, int *status);
 
-static const builtin_t builtin_command[7] = {
+static const builtin_t builtin_command[9] = {
     {"cd", &builtin_cd},
     {"env", &builtin_env},
     {"setenv", &builtin_setenv},
     {"unsetenv", &builtin_unsetenv},
     {"alias", &builtin_alias},
     {"unalias", &builtin_unalias},
+    {"foreach", &builtin_foreach},
+    {"repeat", &builtin_repeat},
     {NULL, NULL}
 };
+
+bool is_inquote(char *command);
+char *manage_inhibitor(char *command);
 
 bintree_t *fill_tree(char *commands);
 

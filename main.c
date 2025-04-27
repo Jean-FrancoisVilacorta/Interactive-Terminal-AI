@@ -7,6 +7,7 @@
 
 #include "shell.h"
 #include <unistd.h>
+#include <signal.h>
 
 int main(int argc, UNUSED char **argv, char **env)
 {
