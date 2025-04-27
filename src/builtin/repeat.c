@@ -9,15 +9,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-void delete_element_array(char **array, int index)
-{
-    size_t i = 0;
-
-    for (i = index; array[i] != NULL; i++)
-        array[i - 1] = array[i];
-    array[i - 1] = NULL;
-}
-
 static bool is_repeat_valid(char **commands)
 {
     if (my_array_len(commands) < 3) {

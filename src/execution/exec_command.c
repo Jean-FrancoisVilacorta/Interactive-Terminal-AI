@@ -106,7 +106,6 @@ static void child_execute(char **cmds, char **env)
     }
 }
 
-
 static int execute_command(char *line, char ***env, int *status)
 {
     pid_t pid;

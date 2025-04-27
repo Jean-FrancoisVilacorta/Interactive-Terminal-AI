@@ -46,7 +46,7 @@ typedef enum inhibitor_s {
 typedef struct redirector_s {
     char *redirector;
     int (*function)(bintree_t *node, char ***env, int *status);
-}redirector_t;
+} redirector_t;
 
 typedef struct alias_s alias_t;
 struct alias_s {
@@ -101,6 +101,7 @@ static const redirector_t redirectors[NB_REDIRECTOR] = {
     {"2>", &redirect_err_output}
 };
 
+size_t my_strnlen(char const *str, size_t n);
 char *dollars_signe(char ***env, char *line);
 bool pipe_is_alone(char **all_commands);
 int is_command_valid(char **all_commands);
