@@ -13,7 +13,10 @@ SRC = 	main.c							\
 		src/builtin/unsetenv.c			\
 		src/builtin/alias.c				\
 		src/builtin/unalias.c			\
+		src/builtin/foreach.c			\
+		src/builtin/repeat.c			\
 		src/shell_loop.c				\
+		src/execution/dollars_signe.c	\
 		src/execution/exec_command.c	\
 		src/execution/exec_builtin.c	\
 		src/execution/error_case.c		\

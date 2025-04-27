@@ -49,6 +49,7 @@ int is_str_int(char *str);
 int my_is_prime(int nb);
 int my_put_nbr(int nb);
 int rev_nbr(int nb);
+int is_alpha(char c);
 int is_alphanum(char c);
 
 //str
@@ -68,6 +69,7 @@ char *my_strupcase(char *str);
 int my_putstr(const char *str);
 int len_without_char(char *str, char c);
 char *clean_str(char *str, char c);
+char *skip_char_begin(char *str, int nb);
 
 size_t my_array_len(char **array);
 void print_array(char **array);

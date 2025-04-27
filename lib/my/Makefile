@@ -8,7 +8,7 @@
 SRC	=	str/my_putchar.c				\
 		str/my_putstr.c			 		\
 		str/my_revstr.c					\
-		str/my_strcapitalize.c			\
+		str/my_strcapitalize.c				\
 		str/my_strcat.c					\
 		str/my_strcmp.c					\
 		str/my_strcpy.c					\
@@ -21,22 +21,23 @@ SRC	=	str/my_putchar.c				\
 		str/my_strstr.c					\
 		str/my_strupcase.c				\
 		str/clean_str.c					\
-		str/len_without_char.c			\
+		str/len_without_char.c				\
+		str/skip_char_begin.c				\
 		nbr/my_alphanum.c				\
-		nbr/my_compute_power_rec.c		\
-		nbr/my_compute_square_root.c	\
+		nbr/my_compute_power_rec.c			\
+		nbr/my_compute_square_root.c			\
 		nbr/my_getnbr.c					\
 		nbr/my_is_float.c				\
 		nbr/my_is_nbr.c					\
 		nbr/my_is_prime.c				\
 		nbr/my_put_nbr.c				\
 		nbr/my_rev_nbr.c				\
-		array/my_show_word_array.c		\
-		array/my_str_to_word_array.c	\
+		array/my_show_word_array.c			\
+		array/my_str_to_word_array.c			\
 		array/print_array.c				\
-		array/my_array_len.c			\
+		array/my_array_len.c				\
 		dprintf/my_dprint.c				\
-		dprintf/print_function.c		\
+		dprintf/print_function.c			\
 
 
 OBJ	=	$(SRC:.c=.o)

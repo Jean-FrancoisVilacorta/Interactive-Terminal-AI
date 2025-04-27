@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <sys/wait.h>
+#include <ctype.h>
 
 static char **get_allow_path(char **env)
 {
@@ -105,6 +106,7 @@ static void child_execute(char **cmds, char **env)
     }
 }
 
+
 static int execute_command(char *line, char ***env, int *status)
 {
     pid_t pid;
@@ -112,7 +114,7 @@ static int execute_command(char *line, char ***env, int *status)
     int background = is_background(line);
 
     line = trim_background(line);
-    cmds = my_str_to_word_arr(line, " \t");
+    cmds = my_str_to_word_arr(line, " \t\'\"");
     if (!cmds || !cmds[0])
         return FAIL;
     if (exec_builtin(cmds, env) == SUCCESS)
@@ -139,7 +141,7 @@ int execute_tree(bintree_t *tree, char ***env, int *status)
             return redirectors[i].function(tree, env, status);
     }
     if (execute_command(tree->item, env, status) == FAIL)
-        exit(84);
+        *status = 84;
     return *status;
 }
 
@@ -168,6 +170,7 @@ int exec_all_commands(char *line, char ***env)
     for (size_t i = 0; cmds[i]; i++) {
         cmds[i] = check_builtin_in_pipe(cmds[i]);
         cmds[i] = is_an_alias(cmds[i]);
+        cmds[i] = dollars_signe(env, cmds[i]);
         tree = fill_tree(cmds[i]);
         if (!tree)
             return 84;
