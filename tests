@@ -1,3 +1,55 @@
+[100]
+NAME="Basic background job test"
+SETUP=""
+CLEAN=""
+TESTS=
+  echo "sleep 2 &"
+  echo "jobs"
+  echo "sleep 1"
+[100-END]
+
+[101]
+NAME="Multiple background jobs test"
+SETUP=""
+CLEAN=""
+TESTS=
+  echo "sleep 5 &"
+  echo "sleep 3 &"
+  echo "jobs"
+  echo "sleep 1"
+[101-END]
+
+[102]
+NAME="Background job with command output"
+SETUP=""
+CLEAN=""
+TESTS=
+  echo "ls -l &"
+  echo "jobs"
+  echo "sleep 1"
+[102-END]
+
+[103]
+NAME="Job control with exit status"
+SETUP=""
+CLEAN=""
+TESTS=
+  echo "sleep 10 &"
+  echo "jobs"
+  echo "kill %1"
+  echo "jobs"
+[103-END]
+
+[104]
+NAME="Background command error handling"
+SETUP=""
+CLEAN=""
+TESTS=
+  echo "nonexistentcommand &"
+  echo "jobs"
+  echo "sleep 1"
+[104-END]
+
 [901]
 NAME="Nothing"
 SETUP="export TERM=xterm ; PATH='/bin:/usr/bin'"

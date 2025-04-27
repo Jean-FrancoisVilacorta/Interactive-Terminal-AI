@@ -31,6 +31,7 @@
     #include "bintree.h"
     #include <string.h>
     #include <stdbool.h>
+    #include <sys/types.h>
 
 typedef struct builtin_s {
     char *name;
@@ -48,6 +49,30 @@ struct alias_s {
     char *command;
     alias_t *next;
 };
+
+typedef struct job_s {
+    pid_t pid;
+    char *command;
+    int status;
+    int number;
+    struct job_s *next;
+} job_t;
+
+// JOBS CONTROLS:
+int is_background(char *cmd);
+char *trim_background(char *cmd);
+job_t *add_job(job_t **jobs, pid_t pid, char *cmd);
+void remove_job(job_t **jobs, pid_t pid);
+void update_job_status(job_t **jobs);
+job_t **get_jobs_list(void);
+int get_next_job_number(job_t *jobs);
+int builtin_jobs(UNUSED char ***env, UNUSED char **args);
+int builtin_fg(UNUSED char ***env, char **args);
+int builtin_bg(UNUSED char ***env, char **args);
+job_t *find_job_by_pid(job_t **jobs, pid_t pid);
+int put_job_in_foreground(job_t *job);
+int put_job_in_background(job_t *job);
+
 
 int my_pipe(bintree_t *node, char ***env, int *status);
 int redirect_input(bintree_t *node, char ***env, int *status);
@@ -84,13 +109,16 @@ int builtin_unalias(UNUSED char ***env, char **commands);
 int print_signal(int status);
 int execute_tree(bintree_t *tree, char ***env, int *status);
 
-static const builtin_t builtin_command[7] = {
+static const builtin_t builtin_command[10] = {
     {"cd", &builtin_cd},
     {"env", &builtin_env},
     {"setenv", &builtin_setenv},
     {"unsetenv", &builtin_unsetenv},
     {"alias", &builtin_alias},
     {"unalias", &builtin_unalias},
+    {"jobs", &builtin_jobs},
+    {"fg", &builtin_fg},
+    {"bg", &builtin_bg},
     {NULL, NULL}
 };
 
