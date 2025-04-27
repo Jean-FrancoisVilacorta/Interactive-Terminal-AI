@@ -107,20 +107,25 @@ static void child_execute(char **cmds, char **env)
 
 static int execute_command(char *line, char ***env, int *status)
 {
-    __pid_t pid = -1;
-    char **cmds = my_str_to_word_arr(line, " \t");
+    pid_t pid;
+    char **cmds = NULL;
+    int background = is_background(line);
 
-    if (!cmds || !cmds[0]) {
-        my_dprintf(STDERR_FD, "failed to get command.\n");
+    line = trim_background(line);
+    cmds = my_str_to_word_arr(line, " \t");
+    if (!cmds || !cmds[0])
         return FAIL;
-    }
     if (exec_builtin(cmds, env) == SUCCESS)
         return SUCCESS;
     pid = fork();
     if (pid == 0)
         child_execute(cmds, *env);
+    if (background) {
+        add_job(get_jobs_list(), pid, line);
+        return SUCCESS;
+    }
     free_word_arr(cmds);
-    waitpid(0, status, 0);
+    waitpid(pid, status, 0);
     return print_signal(*status);
 }
 
