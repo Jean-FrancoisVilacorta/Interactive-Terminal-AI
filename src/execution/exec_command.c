@@ -98,7 +98,8 @@ static void child_execute(char **cmds, char **env)
     char *path = find_binary(env, cmds);
 
     cmds = find_globbings(cmds);
-    if (!path || cmds == NULL)
+    cmds[0] = strdup(path);
+    if (!path || !cmds || !cmds[0])
         exit(1);
     if (execve(path, cmds, env) == FAIL) {
         free(path);
