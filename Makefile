@@ -19,6 +19,7 @@ SRC = 	main.c							\
 		src/redirector/output.c			\
 		src/redirector/pipe.c			\
 		src/redirector/error.c			\
+		src/redirector/parenthese.c		\
 		src/fill_tree.c					\
 
 OBJ = $(SRC:.c=.o)
@@ -31,7 +32,7 @@ LDLIBS = -lmy -lbintree
 
 LDFLAGS = -L lib/
 
-VALGRIND_FLAG	= --track-origins=yes --leak-check=full --show-leak-kinds=all
+VALGRIND_FLAG	= --track-origins=yes  --show-leak-kinds=all
 
 NAME = mysh
 

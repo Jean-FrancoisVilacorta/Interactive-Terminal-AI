@@ -138,7 +138,7 @@ int execute_tree(bintree_t *tree, char ***env, int *status)
 int exec_all_commands(char *command_line, char ***env)
 {
     int status = 0;
-    char **all_commands = my_str_to_word_arr(command_line, ";");
+    char **all_commands = my_str_to_word_arr_ignore(command_line, ";");
     bintree_t *tree = NULL;
 
     if (!all_commands || !all_commands[0]){

@@ -17,7 +17,7 @@
     #define CONTINUE 2
     #define WRITE 1
     #define READ 0
-    #define NB_REDIRECTOR 6
+    #define NB_REDIRECTOR 7
     #define UNUSED __attribute_maybe_unused__
     #include <stdlib.h>
     #include "my.h"
@@ -33,11 +33,15 @@ typedef struct redirector_s {
     int (*function)(bintree_t *node, char ***env, int *status);
 }redirector_t;
 
+void write_in_pipe(bintree_t *tree, int *fd_pipe,
+    int *status, char ***env);
+
 int my_pipe(bintree_t *node, char ***env, int *status);
 int redirect_input(bintree_t *node, char ***env, int *status);
 int redirect_output(bintree_t *node, char ***env, int *status);
 int redirect_output_double(bintree_t *node, char ***env, int *status);
 int redirect_err_output(bintree_t *node, char ***env, int *status);
+int parenthese(bintree_t *node, char ***env, int *status);
 
 static const redirector_t redirectors[NB_REDIRECTOR] = {
     {">", &redirect_output},
@@ -45,7 +49,8 @@ static const redirector_t redirectors[NB_REDIRECTOR] = {
     {"<", &redirect_input},
     {"<<", NULL},
     {"|", &my_pipe},
-    {"2>", &redirect_err_output}
+    {"2>", &redirect_err_output},
+    {"(", &parenthese}
 };
 
 int exec_all_commands(char *command_line, char ***env);
