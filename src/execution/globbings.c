@@ -32,30 +32,42 @@ static char **get_new_cmds(glob_t globbing, int *size)
     return new_cmds;
 }
 
+static char **not_globbing(char **cmds, int i, int *size, char **new_cmds)
+{
+    new_cmds = realloc(new_cmds, sizeof(char *) * (*size + 2));
+    if (!new_cmds)
+        return NULL;
+    new_cmds[*size] = strdup(cmds[i]);
+    if (!new_cmds[*size])
+        return NULL;
+    (*size)++;
+    return new_cmds;
+}
+
 static char **check_globbing(char **cmds, int *size, char **new_cmds, int i)
 {
     glob_t globbing;
+    int if_match = glob(cmds[i], 0, NULL, &globbing);
 
-    if (is_globbing(cmds[i]) && glob(cmds[i], 0, NULL, &globbing) == 0) {
+    if (is_globbing(cmds[i])) {
+        if (if_match == GLOB_NOMATCH) {
+            dprintf(STDERR_FILENO,
+                "\"%s\": No such file or directory\n", cmds[i]);
+            return NULL;
+        }
         new_cmds = get_new_cmds(globbing, size);
         if (!new_cmds)
             return NULL;
     }
     if (!is_globbing(cmds[i])) {
-        new_cmds = realloc(new_cmds, sizeof(char *) * (*size + 2));
+        new_cmds = not_globbing(cmds, i, size, new_cmds);
         if (!new_cmds)
             return NULL;
-        new_cmds[*size] = strdup(cmds[i]);
-        if (!new_cmds[*size])
-            return NULL;
-        (*size)++;
-        new_cmds[*size] = NULL;
     }
-    new_cmds[*size] = NULL;
     return new_cmds;
 }
 
-char **find_globbings(char **cmds)
+char **find_globbings(char **cmds, char *path)
 {
     char **new_cmds = NULL;
     int size = 0;
@@ -63,7 +75,11 @@ char **find_globbings(char **cmds)
     for (size_t i = 0; cmds[i] != NULL; ++i) {
         new_cmds = check_globbing(cmds, &size, new_cmds, i);
         if (!new_cmds)
-            return cmds;
+            return NULL;
     }
+    new_cmds[0] = strdup(path);
+    if (!new_cmds[0])
+        return NULL;
+    new_cmds[size] = NULL;
     return new_cmds;
 }

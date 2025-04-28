@@ -83,7 +83,7 @@ int builtin_alias(UNUSED char ***env, char **commands);
 int builtin_unalias(UNUSED char ***env, char **commands);
 int print_signal(int status);
 int execute_tree(bintree_t *tree, char ***env, int *status);
-char **find_globbings(char **cmds);
+char **find_globbings(char **cmds, char *path);
 
 static const builtin_t builtin_command[7] = {
     {"cd", &builtin_cd},
