@@ -32,8 +32,10 @@ static bool stop(char c)
     return false;
 }
 
-static char *get_last_path2(char *str, char *new, int x)
+static char *get_last_path2(char *str, int len, int x)
 {
+    char *new = malloc(sizeof(char) * (len + 2));
+
     if (new == NULL)
         return NULL;
     for (size_t i = 0; str[x] != '\0'; i++) {
@@ -52,7 +54,6 @@ static char *get_last_path(char *str)
 {
     int len = 0;
     int x = 0;
-    char *new_str = NULL;
 
     if (str == NULL)
         return strdup("./");
@@ -65,8 +66,11 @@ static char *get_last_path(char *str)
             break;
         x--;
     }
-    new_str = malloc(sizeof(char) * (len + 2));
-    return get_last_path2(str, new_str, x);
+    if (stop(str[x]))
+        x++;
+    if (str[x] == '\0')
+        return strdup("./");
+    return get_last_path2(str, len, x);
 }
 
 static void add_change(struct history_t *buff, char *path)

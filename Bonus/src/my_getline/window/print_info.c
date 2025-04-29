@@ -13,6 +13,9 @@
 #include <sys/ioctl.h>
 #include <string.h>
 
+static const char *ia_activate =
+" %s%sIA Activate%s Make your demand to the %s%sGarmentMaker%s~";
+
 void print_info(struct line_h *data)
 {
     int len = data->len;
@@ -91,6 +94,7 @@ static void print_autocomplete(struct line_h *data, size_t lines)
 void print_buff(struct line_h *data, struct history_t *buff)
 {
     size_t lines = 0;
+    size_t len = 0;
 
     if (buff->temp != NULL) {
         print_str(buff->temp, data);
@@ -98,6 +102,12 @@ void print_buff(struct line_h *data, struct history_t *buff)
     }
     if (buff->str != NULL)
         lines = print_str(buff->str, data);
+    len = strlen(buff->str);
+    if (len == 1 && buff->str[0] == '#') {
+        if (printf(ia_activate,
+            BOLD, MAGENTA, RESET, BOLD, YELLOW, RESET) < 0)
+                return;
+    }
     if (data->autocomplete != NULL) {
         print_autocomplete(data, lines);
     }

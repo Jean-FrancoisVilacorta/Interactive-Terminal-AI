@@ -25,7 +25,6 @@ static int file_size(char const *filepath)
 static int verify_first_errors(int fd, int filesize)
 {
     if (fd == ERROR_INT) {
-        my_dputstr(2, "[ERROR] Unable to open the file\n");
         return -1;
     }
     if (filesize == ERROR_INT || filesize == 0) {

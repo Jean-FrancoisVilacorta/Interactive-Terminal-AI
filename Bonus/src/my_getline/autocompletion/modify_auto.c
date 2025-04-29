@@ -22,13 +22,14 @@ char *get_end(char *str)
 
     if (str == NULL || str[0] == '\0')
         return NULL;
-    while (len != 0 && str[len] != '/') {
+    while (len != 0 && str[len] != '/' && str[len] != ' ') {
         len--;
         x++;
     }
     ret = malloc(sizeof(char) * (x + 1));
-    if (str[len] == '/')
+    if (str[len] == '/' || str[len] == ' ')
         len++;
+    ret[0] = '\0';
     for (size_t i = 0; str[len] != '\0'; i++) {
         ret[i] = str[len];
         ret[i + 1] = '\0';

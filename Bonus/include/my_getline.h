@@ -110,5 +110,7 @@ void autocomplete_lines(struct line_h *data, struct history_t *buff);
 struct autoc_h *read_files(DIR *dir, data_t *data,
     struct autoc_h *files);
 char *get_end(char *str);
+char *get_history_path(void);
+int replace(struct history_t *history);
 
 #endif

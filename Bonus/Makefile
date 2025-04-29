@@ -12,15 +12,19 @@ SRC =	src/main.c 	\
 	src/my_getline/window/window_data.c				\
 	src/my_getline/window/special_keys.c			\
 	src/my_getline/history/get_history.c				\
+	src/my_getline/history/replace_file.c				\
 	src/my_getline/autocompletion/get_files.c				\
 	src/my_getline/autocompletion/modify_auto.c				\
 	src/my_getline/autocompletion/autocomplete.c			\
 	src/my_getline/autocompletion/search_files.c			\
 	src/my_getline/autocompletion/print_autocompletion.c	\
+	src/AI/gpt_demand.c							\
+	src/AI/key/verify_key.c							\
+	src/AI/key/create_api_key.c						\
 
 OBJ = $(SRC:.c=.o)
 
-CFLAGS = -Wall -Wextra -g3
+CFLAGS = -Wall -Wextra -g3 -lcurl -lcjson
 
 CPPFLAGS = -iquote ./include/
 
@@ -28,7 +32,9 @@ LDFLAGS = -L. -lmy
 
 INCLUDE = -I ./include/
 
-NAME = 42zh
+GPT = sudo cp src/AI/exec/gpt.py /bin/
+
+NAME = 42sh
 
 MAKE = make
 
@@ -40,6 +46,7 @@ clib:
 make_c: $(NAME)
 
 $(NAME): $(OBJ)
+	sudo $(GPT)
 	gcc $(OBJ) -o $(NAME) $(INCLUDE) $(CFLAGS) $(LDFLAGS)
 
 clean:

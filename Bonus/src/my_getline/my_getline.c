@@ -68,6 +68,8 @@ static bool add_to_buffer(struct line_h *data, struct history_t *buff,
 static bool analize_char(struct line_h *data, char c,
     struct history_t *buff, struct history_t **history)
 {
+    if (c == '\n')
+        return true;
     if (!special_key(data, history, c, buff))
         if (!add_to_buffer(data, buff, history, c))
             return false;
@@ -106,9 +108,11 @@ char *my_getline(char *path)
     print_info(&data);
     ret = read_line(&data, new, new);
     tcsetattr(STDIN_FILENO, TCSANOW, &old_termios);
+    replace(new);
     free_history(history);
     free_data(&data);
     free(new->temp);
     free(new);
+    printf("\n");
     return ret;
 }

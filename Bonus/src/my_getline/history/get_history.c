@@ -22,7 +22,7 @@ struct history_t *add_new_buff(struct history_t *history)
     return new;
 }
 
-static char *get_histoy_path(void)
+char *get_history_path(void)
 {
     char *home = getenv("HOME");
     char *str = my_str_cmb(home, "/.bash_history");
@@ -75,7 +75,7 @@ static struct history_t *read_history(char **data, size_t x,
 
 struct history_t *get_history(void)
 {
-    char *path = get_histoy_path();
+    char *path = get_history_path();
     char *file = open_file(path);
     char **data = NULL;
 
