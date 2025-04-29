@@ -9,15 +9,18 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include <string.h>
 
 int is_direct_path(char *cmd)
 {
-    return cmd[0] == '/' || my_strncmp(cmd, "./", 2) == 0;
+    return !!strchr(cmd, '/');
 }
 
 char *handle_direct_binary(char *cmd)
 {
     if (check_file_access(cmd) == FAIL)
+        return NULL;
+    if (check_basic_access(cmd) == EXIT_FAILURE)
         return NULL;
     return my_strdup(cmd);
 }

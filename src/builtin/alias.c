@@ -30,16 +30,6 @@ static void print_list_alias(alias_t **list)
     }
 }
 
-static void helper_alias(void)
-{
-    printf(GRAS("USAGE\n"));
-        printf(("\talias " RED("Abbreviation")""" """
-        BLUE("\"The command to which you wish to assign an alias\"")"\n"));
-        printf(GRAS("\nDESCRIPTION\n"));
-        printf("\tThe ""alias"" command lets you add"
-            "shortcuts for your commands.\n");
-}
-
 static int check_alias_validity(char **commands)
 {
     size_t len = my_array_len(commands);
@@ -98,7 +88,6 @@ int is_alias_invalid(alias_t **list, char **commands)
 
     if (validy_code) {
         if (validy_code == INVALID_ALIAS) {
-            helper_alias();
             return EXIT_FAILURE;
         }
         if (validy_code == PRINT_ALIAS) {

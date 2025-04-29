@@ -14,5 +14,5 @@ void print_array(char **array)
     if (!array)
         return;
     for (size_t i = 0; array[i]; i++)
-        my_dprintf(0, "[ %s ]\n", array[i]);
+        my_dprintf(0, "[%s]\n", array[i]);
 }
