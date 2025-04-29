@@ -144,6 +144,7 @@ char *manage_inhibitor(char *command);
 bintree_t *fill_tree(char *commands);
 
 int check_file_access(char *path);
+int check_basic_access(char *path);
 char *handle_command_not_exist(char *cmd);
 char *handle_direct_binary(char *cmd);
 int is_direct_path(char *cmd);

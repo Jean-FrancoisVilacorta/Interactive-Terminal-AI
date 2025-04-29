@@ -85,10 +85,8 @@ static char *find_binary(char **env, char **cmds)
         return handle_direct_binary(cmds[0]);
     dirs = get_allow_path(env);
     path = find_in_path(cmds, dirs, &found);
-    if (found == FAIL || strchr(cmds[0], '/')) {
+    if (found == FAIL)
         my_dprintf(STDERR_FD, "%s: Command not found.\n", cmds[0]);
-        return NULL;
-    }
     if (!path)
         path = handle_command_not_exist(cmds[0]);
     my_strcat(path, cmds[0]);
