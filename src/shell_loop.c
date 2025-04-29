@@ -22,7 +22,7 @@ static int handle_command(char *command, char ***env)
 
     if (!my_strcmp(command, ""))
         return status;
-    if (!my_strcmp(command, "exit")) {
+    if (!my_strncmp(command, "exit", 4)) {
         my_dprintf(STDOUT_FD, "exit\n");
         return -1;
     }

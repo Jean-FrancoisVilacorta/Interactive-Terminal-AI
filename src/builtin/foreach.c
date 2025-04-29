@@ -74,16 +74,6 @@ static void add_command_foreach(foreach_t **list, char *command)
     }
 }
 
-static void print_each_command(foreach_t *list)
-{
-    foreach_t *current = list;
-
-    while (current) {
-        printf("command [ %s ]\n", current->command);
-        current = current->next;
-    }
-}
-
 char *replace_each_command(char *dictionary, char *list_cmd, char *command)
 {
     char *value = strstr(command, "$");

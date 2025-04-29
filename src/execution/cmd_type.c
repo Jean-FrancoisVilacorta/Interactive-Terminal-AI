@@ -18,8 +18,6 @@ int is_direct_path(char *cmd)
 
 char *handle_direct_binary(char *cmd)
 {
-    int result = 0;
-
     if (check_file_access(cmd) == FAIL)
         return NULL;
     if (check_basic_access(cmd) == EXIT_FAILURE)
