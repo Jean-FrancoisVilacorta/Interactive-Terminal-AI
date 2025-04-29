@@ -120,6 +120,7 @@ int builtin_alias(UNUSED char ***env, char **commands);
 int builtin_unalias(UNUSED char ***env, char **commands);
 int builtin_repeat(char ***env, char **commands);
 int builtin_foreach(char ***env, char **commands);
+int builtin_which(char ***env, char **commands);
 int print_signal(int status);
 int execute_tree(bintree_t *tree, char ***env, int *status);
 char **find_globbings(char **cmds, char *path);
@@ -136,6 +137,7 @@ static const builtin_t builtin_command[12] = {
     {"jobs", &builtin_jobs},
     {"fg", &builtin_fg},
     {"bg", &builtin_bg},
+    {"which", &builtin_which},
     {NULL, NULL}
 };
 
