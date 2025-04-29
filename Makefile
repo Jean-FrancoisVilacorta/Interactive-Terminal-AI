@@ -5,37 +5,42 @@
 ## Write a makefile for MiniShell1
 ##
 
-SRC = 	main.c							\
-		src/builtin/get_env_var.c		\
-		src/builtin/cd.c				\
-		src/builtin/env.c				\
-		src/builtin/setenv.c			\
-		src/builtin/unsetenv.c			\
-		src/builtin/alias.c				\
-		src/builtin/unalias.c			\
-		src/builtin/foreach.c			\
-		src/builtin/repeat.c			\
-		src/shell_loop.c				\
-		src/execution/dollars_signe.c	\
-		src/execution/exec_command.c	\
-		src/execution/exec_builtin.c	\
-		src/execution/error_case.c		\
-		src/execution/is_an_alias.c		\
-		src/print_signal.c				\
-		src/redirector/input.c			\
-		src/redirector/output.c			\
-		src/redirector/pipe.c			\
-		src/redirector/error.c			\
-		src/fill_tree.c					\
-		src/execution/file_access.c		\
-		src/execution/cmd_type.c		\
-		src/job_controls/jobs_utils.c   \
-		src/job_controls/job_state_transition.c   \
-		src/job_controls/sanytise_cmd_for_jobs.c   \
-		src/builtin/jobs.c              \
-		src/builtin/fg.c              \
-		src/builtin/bg.c              \
-    src/execution/globbings.c     \
+SRC = 	main.c						\
+		$(addprefix src/,			\
+		shell_loop.c				\
+		print_signal.c				\
+		fill_tree.c					\
+		$(addprefix builtin/, 		\
+		cd.c						\
+		get_env_var.c				\
+		env.c						\
+		setenv.c					\
+		unsetenv.c					\
+		alias.c						\
+		unalias.c					\
+		foreach.c					\
+		fg.c              			\
+		bg.c              			\
+		jobs.c              		\
+		repeat.c)					\
+		$(addprefix execution/, 	\
+		dollars_signe.c				\
+		exec_command.c				\
+		exec_builtin.c				\
+		error_case.c				\
+		file_access.c				\
+		cmd_type.c					\
+    	globbings.c     			\
+		is_an_alias.c)				\
+		$(addprefix redirector/,	\
+		input.c						\
+		output.c					\
+		pipe.c						\
+		error.c)					\
+		$(addprefix job_controls/,	\
+		jobs_utils.c   				\
+		job_state_transition.c   	\
+		sanytise_cmd_for_jobs.c))   \
 
 OBJ = $(SRC:.c=.o)
 
