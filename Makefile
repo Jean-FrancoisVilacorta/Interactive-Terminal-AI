@@ -29,12 +29,14 @@ SRC = 	main.c							\
 		src/fill_tree.c					\
 		src/execution/file_access.c		\
 		src/execution/cmd_type.c		\
-		src/job_controls/jobs_utils.c   \
-		src/job_controls/job_state_transition.c   \
-		src/job_controls/sanytise_cmd_for_jobs.c   \
-		src/builtin/jobs.c              \
-		src/builtin/fg.c              \
-		src/builtin/bg.c              \
+		src/job_controls/jobs_utils.c	\
+		src/job_controls/job_state_transition.c		\
+		src/job_controls/sanytise_cmd_for_jobs.c	\
+		src/builtin/jobs.c				\
+		src/builtin/fg.c				\
+		src/builtin/bg.c				\
+		src/test.c						\
+		src/inhibitors/have_inhibitor.c	\
 
 OBJ = $(SRC:.c=.o)
 

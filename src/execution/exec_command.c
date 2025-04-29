@@ -98,6 +98,11 @@ static void child_execute(char **cmds, char **env)
 {
     char *path = find_binary(env, cmds);
 
+    for (int i = 0; cmds[i]; i++){
+        if (have_inhibitor(cmds[i]) == FAIL){
+            exit(1);
+        }
+    }
     if (!path)
         exit(1);
     if (execve(path, cmds, env) == FAIL) {
@@ -106,7 +111,6 @@ static void child_execute(char **cmds, char **env)
     }
 }
 
-
 static int execute_command(char *line, char ***env, int *status)
 {
     pid_t pid;
@@ -114,7 +118,7 @@ static int execute_command(char *line, char ***env, int *status)
     int background = is_background(line);
 
     line = trim_background(line);
-    cmds = my_str_to_word_arr(line, " \t\'\"");
+    cmds = split_command_line(line, " \t");
     if (!cmds || !cmds[0])
         return FAIL;
     if (exec_builtin(cmds, env) == SUCCESS)

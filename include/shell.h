@@ -147,5 +147,7 @@ char *handle_command_not_exist(char *cmd);
 char *handle_direct_binary(char *cmd);
 int is_direct_path(char *cmd);
 char *is_an_alias(char *command);
+char **split_command_line(char const *str, char const *separators);
+int have_inhibitor(char *commands);
 
 #endif

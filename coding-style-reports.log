@@ -1,0 +1,4 @@
+./src/execution/exec_command.c:115: MINOR:C-G2
+./src/inhibitors/have_inhibitor.c:44: MINOR:C-G7
+./src/inhibitors/have_inhibitor.c:66: MINOR:C-L3
+./src/inhibitors/have_inhibitor.c:92: INFO:C-A3
