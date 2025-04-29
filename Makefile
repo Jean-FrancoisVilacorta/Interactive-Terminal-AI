@@ -35,6 +35,7 @@ SRC = 	main.c							\
 		src/builtin/jobs.c              \
 		src/builtin/fg.c              \
 		src/builtin/bg.c              \
+    src/execution/globbings.c     \
 
 OBJ = $(SRC:.c=.o)
 
