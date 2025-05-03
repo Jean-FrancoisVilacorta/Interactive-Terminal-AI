@@ -15,7 +15,7 @@ alias_t **get_list_alias(void)
     return &list;
 }
 
-alias_t *insertion_sort_alias(alias_t *current, alias_t *sorted)
+static alias_t *insertion_sort_alias(alias_t *current, alias_t *sorted)
 {
     alias_t *temp = NULL;
 
@@ -34,7 +34,7 @@ alias_t *insertion_sort_alias(alias_t *current, alias_t *sorted)
     return sorted;
 }
 
-void sort_list_alias(alias_t **list)
+static void sort_list_alias(alias_t **list)
 {
     alias_t *current = (*list);
     alias_t *sorted = NULL;
@@ -46,6 +46,19 @@ void sort_list_alias(alias_t **list)
         current = next;
     }
     (*list) = sorted;
+}
+
+void free_list_alias(void)
+{
+    alias_t **list = get_list_alias();
+    alias_t *current = (*list);
+    alias_t *before = NULL;
+
+    while (current) {
+        before = current->next;
+        free(current);
+        current = before;
+    }
 }
 
 char *is_an_alias(char *command)

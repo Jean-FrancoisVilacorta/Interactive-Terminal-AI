@@ -102,6 +102,7 @@ static const redirector_t redirectors[NB_REDIRECTOR] = {
 };
 
 size_t my_strnlen(char const *str, size_t n);
+size_t get_full_len_command(char **commands);
 char *dollars_signe(char ***env, char *line);
 bool pipe_is_alone(char **all_commands);
 int is_command_valid(char **all_commands);
@@ -149,6 +150,7 @@ int check_basic_access(char *path);
 char *handle_command_not_exist(char *cmd);
 char *handle_direct_binary(char *cmd);
 int is_direct_path(char *cmd);
+void free_list_alias(void);
 char *is_an_alias(char *command);
 
 #endif
