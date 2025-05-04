@@ -65,11 +65,20 @@ char *is_an_alias(char *command)
 {
     alias_t **list = get_list_alias();
     alias_t *current = (*list);
+    char *cmd = NULL;
+    size_t len = 0;
+    char *concat = NULL;
 
     sort_list_alias(list);
     while (current) {
-        if (!strcmp(current->shortcut, command))
-            return clean_str(clean_str(current->command, '('), ')');
+        len = strlen(current->shortcut);
+        if (!strncmp(current->shortcut, command, len)) {
+            concat = skip_char_begin(command, len);
+            cmd = malloc(strlen(concat) + strlen(current->command));
+            strcpy(cmd, current->command);
+            strcat(cmd, concat);
+            return clean_str(clean_str(cmd, '('), ')');
+        }
         current = current->next;
     }
     return command;
