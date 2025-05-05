@@ -74,17 +74,8 @@ static void add_command_foreach(foreach_t **list, char *command)
     }
 }
 
-static void print_each_command(foreach_t *list)
-{
-    foreach_t *current = list;
-
-    while (current) {
-        printf("command [ %s ]\n", current->command);
-        current = current->next;
-    }
-}
-
-char *replace_each_command(char *dictionary, char *list_cmd, char *command)
+static char *replace_each_command(char *dictionary,
+    char *list_cmd, char *command)
 {
     char *value = strstr(command, "$");
     char *replace = NULL;
@@ -120,6 +111,18 @@ void exec_for_each(foreach_t *list, char **commands, char ***env)
     }
 }
 
+void free_list_foreach(foreach_t **list)
+{
+    foreach_t *current = (*list);
+    foreach_t *before = NULL;
+
+    while (current) {
+        before = current->next;
+        free(current);
+        current = before;
+    }
+}
+
 int builtin_foreach(char ***env, char **commands)
 {
     size_t len = 0;
@@ -135,5 +138,6 @@ int builtin_foreach(char ***env, char **commands)
         add_command_foreach(&list, line);
     }
     exec_for_each(list, commands, env);
+    free_list_foreach(&list);
     return 0;
 }

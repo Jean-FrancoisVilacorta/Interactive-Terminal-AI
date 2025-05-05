@@ -29,7 +29,7 @@ static size_t keep_only_command_in_array(char **commands)
     return my_array_len(commands);
 }
 
-static size_t get_full_len_command(char **commands)
+size_t get_full_len_command(char **commands)
 {
     size_t len = 0;
 
