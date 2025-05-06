@@ -166,7 +166,7 @@ char *check_builtin_in_pipe(char *cmd)
 
 int exec_all_commands(char *line, char ***env)
 {
-    char **cmds = my_str_to_word_arr(line, ";");
+    char **cmds = my_str_to_word_arr_ignore(command_line, ";");
     bintree_t *tree = NULL;
     int status = is_command_valid(cmds);
 

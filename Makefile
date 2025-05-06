@@ -52,7 +52,7 @@ LDLIBS = -lmy -lbintree
 
 LDFLAGS = -L lib/
 
-VALGRIND_FLAG	= --track-origins=yes --leak-check=full --show-leak-kinds=all
+VALGRIND_FLAG	= --track-origins=yes  --show-leak-kinds=all
 
 NAME = 42sh
 

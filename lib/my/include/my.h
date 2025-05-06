@@ -75,6 +75,8 @@ size_t my_array_len(char **array);
 void delete_element_array(char **array, int index);
 void print_array(char **array);
 char **my_str_to_word_arr(const char *str, const char *delim);
+char **my_str_to_word_arr_ignore(const char *str,
+    const char *delim);
 int my_show_word_array(char *const *tab);
 int len_word_arr(char **array);
 void free_word_arr(char **arr);
