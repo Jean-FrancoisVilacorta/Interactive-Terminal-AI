@@ -28,7 +28,7 @@ static char **get_allow_path(char **env)
     return allow_path;
 }
 
-static int binary_in_path(char *cmd, char *dir)
+int binary_in_path(char *cmd, char *dir)
 {
     char *path = malloc(sizeof(char) *
         (my_strlen(cmd) + my_strlen(dir) + 2));
@@ -47,7 +47,7 @@ static int binary_in_path(char *cmd, char *dir)
     return SUCCESS;
 }
 
-static char *concat_path(char *dir, char **cmds)
+char *concat_path(char *dir, char **cmds)
 {
     int len = my_strlen(dir);
     char *path = malloc(sizeof(char) * (len + my_strlen(cmds[0]) + 2));
