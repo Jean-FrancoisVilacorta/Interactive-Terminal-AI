@@ -21,6 +21,8 @@ char *handle_exit(char *command)
     char **array = my_str_to_word_arr(command, "|");
     size_t len = 0;
 
+    if (my_array_len(array) <= 0)
+        return command;
     if (!strncmp(array[0], "exit", 4) && my_array_len(array) > 1) {
         delete_element_array(array, 0);
         len = get_full_len_command(array);
