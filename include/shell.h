@@ -102,9 +102,8 @@ static const redirector_t redirectors[NB_REDIRECTOR] = {
 };
 
 size_t my_strnlen(char const *str, size_t n);
-char *find_binary(char **env, char **cmds);
 int binary_in_path(char *cmd, char *dir);
-char *concat_path(char *dir, char **cmds);
+char *concat_path(char *dir, char *cmd);
 char *dollars_signe(char ***env, char *line);
 bool pipe_is_alone(char **all_commands);
 int is_command_valid(char **all_commands);

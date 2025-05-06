@@ -23,22 +23,23 @@ static char **get_path_vars(char **env)
     return allow_path;
 }
 
-static void find_all_matches(char **cmds, char **dirs, int *found)
+static void find_all_matches(char *cmd, char **dirs, int *found)
 {
     char *path = NULL;
 
-    for (size_t i = 0; cmds[0][0] != '\0' &&
-        cmds[0][0] != '/' && dirs[i]; i++) {
-        *found = binary_in_path(cmds[2], dirs[i]);
+    for (size_t i = 0; cmd[0] != '\0' &&
+        cmd[0] != '/' && dirs[i]; i++) {
+        *found = binary_in_path(cmd, dirs[i]);
         if (*found == SUCCESS) {
-            path = concat_path(dirs[i], cmds);
-            my_strcat(path, cmds[2]);
+            path = concat_path(dirs[i], cmd);
+            my_strcat(path, cmd);
             printf("%s\n", path);
+            break;
         }
     }
 }
 
-static int print_all_matches(char ***env, char **commands)
+static int print_match(char ***env, char *command)
 {
     char **dirs = NULL;
     int found = 0;
@@ -46,23 +47,29 @@ static int print_all_matches(char ***env, char **commands)
     dirs = get_path_vars(*env);
     if (!dirs)
         return FAIL;
-    find_all_matches(commands, dirs, &found);
+    find_all_matches(command, dirs, &found);
     if (found)
         return FAIL;
     free_word_arr(dirs);
     return SUCCESS;
 }
 
+static void print_builtin_match(const char *cmd)
+{
+    if (strcmp(cmd, "env") == 0)
+        return;
+    for (size_t i = 0; i < 13; ++i)
+        if (strcmp(cmd, builtin_command->name) == 0) {
+            printf("%s: shell built-in command.\n", builtin_command->name);
+            break;
+        }
+}
+
 int builtin_which(char ***env, char **commands)
 {
-    if (strcmp(commands[1], "-a") == 0) {
-        if (!commands[2])
-            return FAIL;
-        return print_all_matches(env, commands);
+    for (size_t i = 1; commands[i] != NULL; ++i) {
+        print_match(env, commands[i]);
+        print_builtin_match(commands[i]);
     }
-    commands[0] = strdup(commands[1]);
-    if (!commands[0])
-        return FAIL;
-    printf("%s\n", find_binary(*env, commands));
     return SUCCESS;
 }
