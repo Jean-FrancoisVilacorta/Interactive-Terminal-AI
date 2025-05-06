@@ -58,10 +58,10 @@ static void print_builtin_match(const char *cmd)
 {
     if (strcmp(cmd, "env") == 0)
         return;
-    for (size_t i = 0; i < 13; ++i)
-        if (strcmp(cmd, builtin_command->name) == 0) {
-            printf("%s: shell built-in command.\n", builtin_command->name);
-            break;
+    for (size_t i = 0; i < 12; ++i)
+        if (strcmp(cmd, builtin_command[i].name) == 0) {
+            printf("%s: shell built-in command.\n", builtin_command[i].name);
+            return;
         }
 }
 
