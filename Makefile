@@ -5,22 +5,42 @@
 ## Write a makefile for MiniShell1
 ##
 
-SRC = 	main.c							\
-		src/builtin/get_env_var.c		\
-		src/builtin/cd.c				\
-		src/builtin/env.c				\
-		src/builtin/setenv.c			\
-		src/builtin/unsetenv.c			\
-		src/shell_loop.c				\
-		src/execution/exec_command.c	\
-		src/execution/exec_builtin.c	\
-		src/print_signal.c				\
-		src/redirector/input.c			\
-		src/redirector/output.c			\
-		src/redirector/pipe.c			\
-		src/redirector/error.c			\
-		src/redirector/parenthese.c		\
-		src/fill_tree.c					\
+SRC = 	main.c						\
+		$(addprefix src/,			\
+		shell_loop.c				\
+		print_signal.c				\
+		fill_tree.c					\
+		$(addprefix builtin/, 		\
+		cd.c						\
+		get_env_var.c				\
+		env.c						\
+		setenv.c					\
+		unsetenv.c					\
+		alias.c						\
+		unalias.c					\
+		foreach.c					\
+		fg.c              			\
+		bg.c              			\
+		jobs.c              		\
+		repeat.c)					\
+		$(addprefix execution/, 	\
+		dollars_signe.c				\
+		exec_command.c				\
+		exec_builtin.c				\
+		error_case.c				\
+		file_access.c				\
+		cmd_type.c					\
+    	globbings.c     			\
+		is_an_alias.c)				\
+		$(addprefix redirector/,	\
+		input.c						\
+		output.c					\
+		pipe.c						\
+		error.c)					\
+		$(addprefix job_controls/,	\
+		jobs_utils.c   				\
+		job_state_transition.c   	\
+		sanytise_cmd_for_jobs.c))   \
 
 OBJ = $(SRC:.c=.o)
 
@@ -34,7 +54,7 @@ LDFLAGS = -L lib/
 
 VALGRIND_FLAG	= --track-origins=yes  --show-leak-kinds=all
 
-NAME = mysh
+NAME = 42sh
 
 all:	build_lib $(NAME)
 
@@ -49,6 +69,9 @@ valgrind: build_lib $(OBJ)
 	$(CC) $(OBJ) -o $(NAME) $(CFLAGS) $(LDFLAGS) $(LDLIBS) -g
 	valgrind $(VALGRIND_FLAG) ./$(NAME)
 
+debug: CPPFLAGS += -g3
+debug: all
+
 clean:
 	$(MAKE) -C lib/my clean
 	$(MAKE) -C lib/bintree clean
@@ -59,4 +82,4 @@ fclean: clean
 	$(MAKE) -C lib/bintree fclean
 	$(RM) $(NAME)
 
-re: fclean all
+re: fclean all debug

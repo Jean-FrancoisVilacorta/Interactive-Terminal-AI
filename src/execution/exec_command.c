@@ -11,12 +11,7 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <sys/wait.h>
-
-void print_array(char **array)
-{
-    for (size_t i = 0; array[i]; i++)
-        my_dprintf(0, "[ %s ]\n", array[i]);
-}
+#include <ctype.h>
 
 static char **get_allow_path(char **env)
 {
@@ -33,90 +28,111 @@ static char **get_allow_path(char **env)
     return allow_path;
 }
 
-static int binary_in_path(char *comand, char *dir_path)
+static int binary_in_path(char *cmd, char *dir)
 {
-    char *file_path = malloc(sizeof(char) *
-        (my_strlen(comand) + my_strlen(dir_path) + 2));
+    char *path = malloc(sizeof(char) *
+        (my_strlen(cmd) + my_strlen(dir) + 2));
 
-    if (!file_path)
+    if (!path)
         return FAIL;
-    if (my_strncmp(comand, "./", 2) == 0)
-        return FAIL;
-    file_path[0] = '\0';
-    my_strcat(file_path, dir_path);
-    my_strcat(file_path, "/");
-    my_strcat(file_path, comand);
-    if (access(file_path, F_OK) != 0) {
-        free(file_path);
+    path[0] = '\0';
+    my_strcat(path, dir);
+    my_strcat(path, "/");
+    my_strcat(path, cmd);
+    if (check_file_access(path) == EXIT_FAILURE) {
+        free(path);
         return FAIL;
     }
-    free(file_path);
+    free(path);
     return SUCCESS;
 }
 
-static char *concat_path(char *allow_path, char **commands)
+static char *concat_path(char *dir, char **cmds)
 {
-    int len = my_strlen(allow_path);
-    char *path = malloc(sizeof(char) * (len + my_strlen(commands[0]) + 2));
+    int len = my_strlen(dir);
+    char *path = malloc(sizeof(char) * (len + my_strlen(cmds[0]) + 2));
 
+    if (!path)
+        return NULL;
     path[0] = '\0';
-    my_strcat(path, allow_path);
+    my_strcat(path, dir);
     my_strcat(path, "/");
     return path;
 }
 
-static char *find_binary(char **env, char **commands)
+static char *find_in_path(char **cmds, char **dirs, int *found)
 {
-    char **allow_path = get_allow_path(env);
     char *path = NULL;
 
-    for (size_t i = 0; commands[0][0] != '/' && allow_path[i]; i++){
-        if (binary_in_path(commands[0], allow_path[i]) == SUCCESS){
-            path = concat_path(allow_path[i], commands);
+    for (size_t i = 0; cmds[0][0] != '\0' &&
+        cmds[0][0] != '/' && dirs[i]; i++) {
+        *found = binary_in_path(cmds[0], dirs[i]);
+        if (*found == SUCCESS) {
+            path = concat_path(dirs[i], cmds);
             break;
         }
     }
-    if (!path){
-        path = malloc(sizeof(char) * my_strlen(commands[0]));
-        if (!path)
-            return NULL;
-        path[0] = '\0';
-    }
-    my_strcat(path, commands[0]);
-    free_word_arr(allow_path);
     return path;
 }
 
-static void child_execute(char **commands, char **env)
+static char *find_binary(char **env, char **cmds)
 {
-    char *path = find_binary(env, commands);
+    char **dirs = NULL;
+    char *path = NULL;
+    int found = 0;
 
+    if (is_direct_path(cmds[0]))
+        return handle_direct_binary(cmds[0]);
+    dirs = get_allow_path(env);
+    path = find_in_path(cmds, dirs, &found);
+    if (found == FAIL)
+        my_dprintf(STDERR_FD, "%s: Command not found.\n", cmds[0]);
     if (!path)
+        path = handle_command_not_exist(cmds[0]);
+    my_strcat(path, cmds[0]);
+    free_word_arr(dirs);
+    return path;
+}
+
+static void child_execute(char **cmds, char **env)
+{
+    char *path = find_binary(env, cmds);
+
+    for (int i = 0; cmds[i]; i++){
+        if (have_inhibitor(cmds[i]) == FAIL){
+            exit(1);
+        }
+    }
+    cmds = find_globbings(cmds, path);
+    if (!path || !cmds)
         exit(1);
-    if (execve(path, commands, env) == FAIL){
-        my_dprintf(STDERR_FD, "%s: Command not found.\n", commands[0]);
+    if (execve(path, cmds, env) == FAIL) {
         free(path);
         exit(1);
     }
 }
 
-static int execute_command(char *command_line, char ***env, int *status)
+static int execute_command(char *line, char ***env, int *status)
 {
-    __pid_t pid = -1;
-    char **commands = my_str_to_word_arr(command_line, " \t");
+    pid_t pid;
+    char **cmds = NULL;
+    int background = is_background(line);
 
-    if (!commands || !commands[0]){
-        my_dprintf(STDERR_FD, "failed to get command.\n");
+    line = trim_background(line);
+    cmds = split_command_line(line, " \t");
+    if (!cmds || !cmds[0])
         return FAIL;
-    }
-    if (exec_builtin(commands, env) == SUCCESS)
+    if (exec_builtin(cmds, env) == SUCCESS)
         return SUCCESS;
     pid = fork();
-    if (pid == 0){
-        child_execute(commands, (*env));
+    if (pid == 0)
+        child_execute(cmds, *env);
+    if (background) {
+        add_job(get_jobs_list(), pid, line);
+        return SUCCESS;
     }
-    free_word_arr(commands);
-    waitpid(0, status, 0);
+    free_word_arr(cmds);
+    waitpid(pid, status, 0);
     return print_signal(*status);
 }
 
@@ -124,34 +140,48 @@ int execute_tree(bintree_t *tree, char ***env, int *status)
 {
     if (!tree || !tree->item)
         return FAIL;
-    for (int i = 0; i < NB_REDIRECTOR; i++){
+    for (int i = 0; i < NB_REDIRECTOR; i++) {
         if (!my_strcmp(redirectors[i].redirector, tree->item)
-            && redirectors[i].function){
+            && redirectors[i].function)
             return redirectors[i].function(tree, env, status);
-        }
     }
     if (execute_command(tree->item, env, status) == FAIL)
-        exit(84);
+        *status = 84;
     return *status;
 }
 
-int exec_all_commands(char *command_line, char ***env)
+char *check_builtin_in_pipe(char *cmd)
 {
-    int status = 0;
-    char **all_commands = my_str_to_word_arr_ignore(command_line, ";");
-    bintree_t *tree = NULL;
+    char **arr = my_str_to_word_arr(cmd, "|");
+    size_t len = my_array_len(arr);
 
-    if (!all_commands || !all_commands[0]){
-        my_dprintf(STDERR_FD, "failed to get all_command.\n");
-        return FAIL;
+    if (!arr || !len)
+        return cmd;
+    for (size_t i = 0; builtin_command[i].name; i++) {
+        if (strstr(arr[len - 1], builtin_command[i].name))
+            return arr[len - 1];
     }
-    for (size_t i = 0; all_commands[i]; i++){
-        tree = fill_tree(all_commands[i]);
+    return cmd;
+}
+
+int exec_all_commands(char *line, char ***env)
+{
+    char **cmds = my_str_to_word_arr_ignore(command_line, ";");
+    bintree_t *tree = NULL;
+    int status = is_command_valid(cmds);
+
+    if (status != 0)
+        return status;
+    for (size_t i = 0; cmds[i]; i++) {
+        cmds[i] = check_builtin_in_pipe(cmds[i]);
+        cmds[i] = is_an_alias(cmds[i]);
+        cmds[i] = dollars_signe(env, cmds[i]);
+        tree = fill_tree(cmds[i]);
         if (!tree)
-            return EXIT_ERROR;
+            return 84;
         execute_tree(tree, env, &status);
         free_bintree(tree);
     }
-    free_word_arr(all_commands);
+    free_word_arr(cmds);
     return status;
 }

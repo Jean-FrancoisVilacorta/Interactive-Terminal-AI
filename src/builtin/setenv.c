@@ -77,6 +77,10 @@ int builtin_setenv(char ***env, char **commands)
     char *variable = NULL;
     int nb_command = len_word_arr(commands);
 
+    if (nb_command == 1) {
+        builtin_env(env);
+        return SUCCESS;
+    }
     if (nb_command > 3 || nb_command <= 1 ||
         is_valid_env_name(commands[1]) == FAIL)
         return FAIL;

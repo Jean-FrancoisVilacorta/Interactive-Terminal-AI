@@ -35,21 +35,23 @@ static void execute_com_end(bintree_t *tree, int *fd_pipe,
 int my_pipe(bintree_t *node, char ***env, int *status)
 {
     int fd_pipe[2];
-    pid_t pid = -1;
+    pid_t pid_one = -1;
+    pid_t pid_two = -1;
 
     if (!node->left || !node->right)
         return FAIL;
     if (pipe(fd_pipe) == FAIL)
         return FAIL;
-    pid = fork();
+    pid_one = fork();
     if (pid == 0)
         write_in_pipe(node->left, fd_pipe, status, env);
     waitpid(pid, status, 0);
-    pid = fork();
+    pid_two = fork();
     if (pid == 0)
-        execute_com_end(node->right, fd_pipe, status, env);
+    execute_com_end(node->right, fd_pipe, status, env);
     close(fd_pipe[READ]);
     close(fd_pipe[WRITE]);
-    waitpid(pid, status, 0);
+    waitpid(pid_one, status, 0);
+    waitpid(pid_two, status, 0);
     return *status;
 }
