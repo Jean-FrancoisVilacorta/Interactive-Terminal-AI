@@ -102,6 +102,7 @@ static const redirector_t redirectors[NB_REDIRECTOR] = {
 };
 
 size_t my_strnlen(char const *str, size_t n);
+char *find_binary(char **env, char **cmds);
 char *dollars_signe(char ***env, char *line);
 bool pipe_is_alone(char **all_commands);
 int is_command_valid(char **all_commands);
@@ -125,7 +126,7 @@ int print_signal(int status);
 int execute_tree(bintree_t *tree, char ***env, int *status);
 char **find_globbings(char **cmds, char *path);
 
-static const builtin_t builtin_command[12] = {
+static const builtin_t builtin_command[13] = {
     {"cd", &builtin_cd},
     {"env", &builtin_env},
     {"setenv", &builtin_setenv},

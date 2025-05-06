@@ -22,7 +22,8 @@ SRC = 	main.c						\
 		fg.c              			\
 		bg.c              			\
 		jobs.c              		\
-		repeat.c)					\
+		repeat.c					\
+		which.c)					\
 		$(addprefix execution/, 	\
 		dollars_signe.c				\
 		exec_command.c				\
