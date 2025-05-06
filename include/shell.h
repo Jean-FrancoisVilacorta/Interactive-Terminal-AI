@@ -104,6 +104,9 @@ static const redirector_t redirectors[NB_REDIRECTOR] = {
 size_t my_strnlen(char const *str, size_t n);
 int binary_in_path(char *cmd, char *dir);
 char *concat_path(char *dir, char *cmd);
+void find_all_matches(char *cmd, char **dirs, int *found,
+    bool is_which);
+int print_match(char ***env, char *command, bool is_which);
 char *dollars_signe(char ***env, char *line);
 bool pipe_is_alone(char **all_commands);
 int is_command_valid(char **all_commands);
@@ -123,11 +126,12 @@ int builtin_unalias(UNUSED char ***env, char **commands);
 int builtin_repeat(char ***env, char **commands);
 int builtin_foreach(char ***env, char **commands);
 int builtin_which(char ***env, char **commands);
+int builtin_where(char ***env, char **commands);
 int print_signal(int status);
 int execute_tree(bintree_t *tree, char ***env, int *status);
 char **find_globbings(char **cmds, char *path);
 
-static const builtin_t builtin_command[13] = {
+static const builtin_t builtin_command[14] = {
     {"cd", &builtin_cd},
     {"env", &builtin_env},
     {"setenv", &builtin_setenv},
@@ -140,6 +144,7 @@ static const builtin_t builtin_command[13] = {
     {"fg", &builtin_fg},
     {"bg", &builtin_bg},
     {"which", &builtin_which},
+    {"where", &builtin_where},
     {NULL, NULL}
 };
 

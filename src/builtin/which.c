@@ -23,23 +23,29 @@ static char **get_path_vars(char **env)
     return allow_path;
 }
 
-static void find_all_matches(char *cmd, char **dirs, int *found)
+void find_all_matches(char *cmd, char **dirs, int *found,
+    bool is_which)
 {
     char *path = NULL;
 
     for (size_t i = 0; cmd[0] != '\0' &&
         cmd[0] != '/' && dirs[i]; i++) {
         *found = binary_in_path(cmd, dirs[i]);
-        if (*found == SUCCESS) {
+        if (*found == SUCCESS && is_which) {
             path = concat_path(dirs[i], cmd);
             my_strcat(path, cmd);
             printf("%s\n", path);
             break;
         }
+        if (*found == SUCCESS && !is_which) {
+            path = concat_path(dirs[i], cmd);
+            my_strcat(path, cmd);
+            printf("%s\n", path);
+        }
     }
 }
 
-static int print_match(char ***env, char *command)
+int print_match(char ***env, char *command, bool is_which)
 {
     char **dirs = NULL;
     int found = 0;
@@ -47,7 +53,7 @@ static int print_match(char ***env, char *command)
     dirs = get_path_vars(*env);
     if (!dirs)
         return FAIL;
-    find_all_matches(command, dirs, &found);
+    find_all_matches(command, dirs, &found, is_which);
     if (found)
         return FAIL;
     free_word_arr(dirs);
@@ -58,7 +64,7 @@ static void print_builtin_match(const char *cmd)
 {
     if (strcmp(cmd, "env") == 0)
         return;
-    for (size_t i = 0; i < 12; ++i)
+    for (size_t i = 0; builtin_command[i].name != NULL; ++i)
         if (strcmp(cmd, builtin_command[i].name) == 0) {
             printf("%s: shell built-in command.\n", builtin_command[i].name);
             return;
@@ -72,7 +78,7 @@ int builtin_which(char ***env, char **commands)
         return FAIL;
     }
     for (size_t i = 1; commands[i] != NULL; ++i) {
-        print_match(env, commands[i]);
+        print_match(env, commands[i], true);
         print_builtin_match(commands[i]);
     }
     return SUCCESS;
