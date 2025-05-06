@@ -17,7 +17,7 @@
     #define CONTINUE 2
     #define WRITE 1
     #define READ 0
-    #define NB_REDIRECTOR 6
+    #define NB_REDIRECTOR 7
     #define PRINT_ALIAS 1
     #define INVALID_ALIAS 2
     #define UNUSED __attribute_maybe_unused__
@@ -86,11 +86,15 @@ job_t *find_job_by_pid(job_t **jobs, pid_t pid);
 int put_job_in_foreground(job_t *job);
 int put_job_in_background(job_t *job);
 
+void write_in_pipe(bintree_t *tree, int *fd_pipe,
+    int *status, char ***env);
+
 int my_pipe(bintree_t *node, char ***env, int *status);
 int redirect_input(bintree_t *node, char ***env, int *status);
 int redirect_output(bintree_t *node, char ***env, int *status);
 int redirect_output_double(bintree_t *node, char ***env, int *status);
 int redirect_err_output(bintree_t *node, char ***env, int *status);
+int parenthese(bintree_t *node, char ***env, int *status);
 
 static const redirector_t redirectors[NB_REDIRECTOR] = {
     {">", &redirect_output},
@@ -98,7 +102,8 @@ static const redirector_t redirectors[NB_REDIRECTOR] = {
     {"<", &redirect_input},
     {"<<", NULL},
     {"|", &my_pipe},
-    {"2>", &redirect_err_output}
+    {"2>", &redirect_err_output},
+    {"(", &parenthese}
 };
 
 size_t my_strnlen(char const *str, size_t n);
@@ -152,5 +157,7 @@ char *handle_direct_binary(char *cmd);
 int is_direct_path(char *cmd);
 void free_list_alias(void);
 char *is_an_alias(char *command);
+char **split_command_line(char const *str, char const *separators);
+int have_inhibitor(char *commands);
 
 #endif

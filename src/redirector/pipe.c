@@ -8,14 +8,16 @@
 #include "shell.h"
 #include <wait.h>
 
-static void execute_com(bintree_t *tree, int *fd_pipe,
+void write_in_pipe(bintree_t *tree, int *fd_pipe,
     int *status, char ***env)
 {
     if (dup2(fd_pipe[WRITE], STDOUT_FILENO) == FAIL)
         return;
     close(fd_pipe[READ]);
     close(fd_pipe[WRITE]);
-    *status = execute_tree(tree, env, status);
+    if (my_strcmp(tree->item, "")){
+        *status = execute_tree(tree, env, status);
+    }
     exit(*status);
 }
 
@@ -42,7 +44,8 @@ int my_pipe(bintree_t *node, char ***env, int *status)
         return FAIL;
     pid_one = fork();
     if (pid_one == 0)
-        execute_com(node->left, fd_pipe, status, env);
+        write_in_pipe(node->left, fd_pipe, status, env);
+    waitpid(pid_one, status, 0);
     pid_two = fork();
     if (pid_two == 0)
         execute_com_end(node->right, fd_pipe, status, env);
