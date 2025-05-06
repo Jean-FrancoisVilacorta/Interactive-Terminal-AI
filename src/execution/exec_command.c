@@ -75,7 +75,7 @@ static char *find_in_path(char **cmds, char **dirs, int *found)
     return path;
 }
 
-static char *find_binary(char **env, char **cmds)
+char *find_binary(char **env, char **cmds)
 {
     char **dirs = NULL;
     char *path = NULL;
