@@ -10,6 +10,9 @@ SRC = 	main.c						\
 		shell_loop.c				\
 		print_signal.c				\
 		fill_tree.c					\
+		$(addprefix inhibitors/,	\
+		have_inhibitor.c			\
+		split_inhibitors.c)			\
 		$(addprefix builtin/, 		\
 		cd.c						\
 		get_env_var.c				\
@@ -36,7 +39,8 @@ SRC = 	main.c						\
 		input.c						\
 		output.c					\
 		pipe.c						\
-		error.c)					\
+		error.c 					\
+		parenthese.c)				\
 		$(addprefix job_controls/,	\
 		jobs_utils.c   				\
 		job_state_transition.c   	\

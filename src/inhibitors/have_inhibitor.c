@@ -15,7 +15,7 @@ static int skip_inhibittor(char *command, int index, char inhibitor)
         skip++;
     }
     if (!command[skip]){
-        my_dprintf(STDERR_FD, "\'%c\' sans correspondance\n", inhibitor);
+        my_dprintf(STDERR_FD, "Unmatched \'%c\'.\n", inhibitor);
         return FAIL;
     }
     return skip - index;
