@@ -100,9 +100,10 @@ void print_buff(struct line_h *data, struct history_t *buff)
         print_str(buff->temp, data);
         return;
     }
-    if (buff->str != NULL)
+    if (buff->str != NULL) {
         lines = print_str(buff->str, data);
-    len = strlen(buff->str);
+        len = strlen(buff->str);
+    }
     if (len == 1 && buff->str[0] == '#') {
         if (printf(ia_activate,
             BOLD, MAGENTA, RESET, BOLD, YELLOW, RESET) < 0)
