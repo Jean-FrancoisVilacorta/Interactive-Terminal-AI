@@ -46,7 +46,7 @@ typedef enum inhibitor_s {
 typedef struct redirector_s {
     char *redirector;
     int (*function)(bintree_t *node, char ***env, int *status);
-}redirector_t;
+} redirector_t;
 
 typedef struct alias_s alias_t;
 struct alias_s {
@@ -101,6 +101,8 @@ static const redirector_t redirectors[NB_REDIRECTOR] = {
     {"2>", &redirect_err_output}
 };
 
+size_t my_strnlen(char const *str, size_t n);
+size_t get_full_len_command(char **commands);
 char *dollars_signe(char ***env, char *line);
 bool pipe_is_alone(char **all_commands);
 int is_command_valid(char **all_commands);
@@ -121,6 +123,7 @@ int builtin_repeat(char ***env, char **commands);
 int builtin_foreach(char ***env, char **commands);
 int print_signal(int status);
 int execute_tree(bintree_t *tree, char ***env, int *status);
+char **find_globbings(char **cmds, char *path);
 
 static const builtin_t builtin_command[12] = {
     {"cd", &builtin_cd},
@@ -143,9 +146,11 @@ char *manage_inhibitor(char *command);
 bintree_t *fill_tree(char *commands);
 
 int check_file_access(char *path);
+int check_basic_access(char *path);
 char *handle_command_not_exist(char *cmd);
 char *handle_direct_binary(char *cmd);
 int is_direct_path(char *cmd);
+void free_list_alias(void);
 char *is_an_alias(char *command);
 char **split_command_line(char const *str, char const *separators);
 int have_inhibitor(char *commands);

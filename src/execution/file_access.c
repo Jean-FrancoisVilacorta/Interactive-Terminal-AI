@@ -11,6 +11,24 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 
+int check_basic_access(char *path)
+{
+    struct stat st;
+
+    if (access(path, F_OK) != 0) {
+        my_dprintf(STDERR_FD, "%s: Command not found.\n", path);
+        return EXIT_FAILURE;
+    }
+    if (stat(path, &st) == 0 && S_ISDIR(st.st_mode)) {
+        my_dprintf(STDERR_FD, "%s: Permission denied.\n", path);
+        return EXIT_FAILURE;
+    }
+    if (access(path, X_OK) != 0) {
+        my_dprintf(STDERR_FD, "%s: Permission denied.\n", path);
+        return EXIT_FAILURE;
+    }
+    return EXIT_SUCCESS;
+}
 
 int check_elf_header(int fd, char *path)
 {

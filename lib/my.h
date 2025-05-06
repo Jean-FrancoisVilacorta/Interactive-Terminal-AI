@@ -72,6 +72,7 @@ char *clean_str(char *str, char c);
 char *skip_char_begin(char *str, int nb);
 
 size_t my_array_len(char **array);
+void delete_element_array(char **array, int index);
 void print_array(char **array);
 char **my_str_to_word_arr(const char *str, const char *delim);
 int my_show_word_array(char *const *tab);
