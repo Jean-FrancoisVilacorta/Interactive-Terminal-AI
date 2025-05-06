@@ -43,12 +43,12 @@ int my_pipe(bintree_t *node, char ***env, int *status)
     if (pipe(fd_pipe) == FAIL)
         return FAIL;
     pid_one = fork();
-    if (pid == 0)
+    if (pid_one == 0)
         write_in_pipe(node->left, fd_pipe, status, env);
-    waitpid(pid, status, 0);
+    waitpid(pid_one, status, 0);
     pid_two = fork();
-    if (pid == 0)
-    execute_com_end(node->right, fd_pipe, status, env);
+    if (pid_two == 0)
+        execute_com_end(node->right, fd_pipe, status, env);
     close(fd_pipe[READ]);
     close(fd_pipe[WRITE]);
     waitpid(pid_one, status, 0);
