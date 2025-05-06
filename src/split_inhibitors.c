@@ -98,8 +98,6 @@ static char *copy_from_x(char const *str, size_t x, size_t len)
     size_t b = 0;
     char *copy = NULL;
 
-    if (search_separator(str[x], ignore) == true);
-    if (search_separator(str[x + len], endignore) == true);
     copy = malloc(sizeof(char) * (len + 2 - i - a));
     while (str[x + i] != replace && str[x + i] != '\0') {
         copy[b] = str[x + i];

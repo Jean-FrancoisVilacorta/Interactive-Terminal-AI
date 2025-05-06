@@ -35,7 +35,7 @@ SRC = 	main.c							\
 		src/builtin/jobs.c				\
 		src/builtin/fg.c				\
 		src/builtin/bg.c				\
-		src/test.c						\
+		src/split_inhibitors.c			\
 		src/inhibitors/have_inhibitor.c	\
 
 OBJ = $(SRC:.c=.o)
