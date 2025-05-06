@@ -12,6 +12,8 @@ static int is_redirector(char *commands, int index)
 {
     int len = 0;
 
+    if (index < 0)
+        return FAIL;
     for (int i = 0; i < NB_REDIRECTOR; i++){
         len = my_strlen(redirectors[i].redirector);
         if (commands[index] == redirectors[i].redirector[len - 1])
@@ -63,21 +65,65 @@ static char *get_redirect(char *commands, int index)
     return redirector;
 }
 
-static int check_redirector(char *commands, int i, bintree_t **root)
+static void remove_parenthese(char *command)
+{
+    int len = 0;
+
+    while (command[len] && command[len] != ')')
+        len++;
+    command[len] = '\0';
+}
+
+static void handle_paranthese(bintree_t **node)
+{
+    if (!my_strcmp((*node)->right->item, ""))
+        (*node)->right->item = (*node)->left->item;
+    if (!my_strcmp((*node)->item, "("))
+        remove_parenthese((*node)->right->item);
+}
+
+static int is_last_redirect(char *command, int i)
+{
+    if (i - 1 <= 0)
+        return FAIL;
+    i--;
+    for (; i >= 0; i--){
+        if (is_redirector(command, i) == SUCCESS)
+            return FAIL;
+    }
+    return SUCCESS;
+}
+
+static int skip_paranthese(char *commands, int i)
+{
+    if (commands[i] == ')'){
+        while (i > 0 && commands[i - 1] != '(')
+            i -= 1;
+        if (is_last_redirect(commands, i - 1) == SUCCESS){
+            i -= 2;
+        }
+    }
+    return i;
+}
+
+static int check_redirector(char *commands, int *i,
+    bintree_t **root)
 {
     char *split = NULL;
 
-    if (is_redirector(commands, i) == SUCCESS){
-        (*root)->item = get_redirect(commands, i);
+    *i = skip_paranthese(commands, *i);
+    if (is_redirector(commands, *i) == SUCCESS){
+        (*root)->item = get_redirect(commands, *i);
         if (!(*root)->item)
             return FAIL;
-        split = split_command(commands, i);
+        split = split_command(commands, *i);
         if (!split)
             return FAIL;
         (*root)->right = create_node_tree(split);
         (*root)->left = create_node_tree(commands);
         if (!(*root)->left || !(*root)->right)
             return FAIL;
+        handle_paranthese(root);
         (*root) = (*root)->left;
     }
     return SUCCESS;
@@ -92,9 +138,8 @@ bintree_t *fill_tree(char *commands)
     if (!root)
         return NULL;
     for (int i = len - 1; i >= 0; i--){
-        if (check_redirector(commands, i, &root) == FAIL){
+        if (check_redirector(commands, &i, &root) == FAIL){
             free_bintree(tmp);
-            my_dprintf(STDERR_FD, "failed redirector.\n");
             return NULL;
         }
     }

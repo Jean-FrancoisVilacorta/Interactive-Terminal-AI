@@ -98,6 +98,11 @@ static void child_execute(char **cmds, char **env)
 {
     char *path = find_binary(env, cmds);
 
+    for (int i = 0; cmds[i]; i++){
+        if (have_inhibitor(cmds[i]) == FAIL){
+            exit(1);
+        }
+    }
     cmds = find_globbings(cmds, path);
     if (!path || !cmds)
         exit(1);
@@ -114,7 +119,7 @@ static int execute_command(char *line, char ***env, int *status)
     int background = is_background(line);
 
     line = trim_background(line);
-    cmds = my_str_to_word_arr(line, " \t\'\"");
+    cmds = split_command_line(line, " \t");
     if (!cmds || !cmds[0])
         return FAIL;
     if (exec_builtin(cmds, env) == SUCCESS)
@@ -161,7 +166,7 @@ char *check_builtin_in_pipe(char *cmd)
 
 int exec_all_commands(char *line, char ***env)
 {
-    char **cmds = my_str_to_word_arr(line, ";");
+    char **cmds = my_str_to_word_arr_ignore(line, ";");
     bintree_t *tree = NULL;
     int status = is_command_valid(cmds);
 
