@@ -67,6 +67,10 @@ static void print_builtin_match(const char *cmd)
 
 int builtin_which(char ***env, char **commands)
 {
+    if (!commands[1]) {
+        dprintf(STDERR_FD, "which: Too few arguments.\n");
+        return FAIL;
+    }
     for (size_t i = 1; commands[i] != NULL; ++i) {
         print_match(env, commands[i]);
         print_builtin_match(commands[i]);
