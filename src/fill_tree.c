@@ -12,6 +12,8 @@ static int is_redirector(char *commands, int index)
 {
     int len = 0;
 
+    if (index < 0)
+        return FAIL;
     for (int i = 0; i < NB_REDIRECTOR; i++){
         len = my_strlen(redirectors[i].redirector);
         if (commands[index] == redirectors[i].redirector[len - 1])
@@ -80,11 +82,26 @@ static void handle_paranthese(bintree_t **node)
         remove_parenthese((*node)->right->item);
 }
 
+static int is_last_redirect(char *command, int i)
+{
+    if (i - 1 <= 0)
+        return FAIL;
+    i--;
+    for (; i >= 0; i--){
+        if (is_redirector(command, i) == SUCCESS)
+            return FAIL;
+    }
+    return SUCCESS;
+}
+
 static int skip_paranthese(char *commands, int i)
 {
     if (commands[i] == ')'){
         while (i > 0 && commands[i - 1] != '(')
             i -= 1;
+        if (is_last_redirect(commands, i - 1) == SUCCESS){
+            i -= 2;
+        }
     }
     return i;
 }
