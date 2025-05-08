@@ -103,8 +103,8 @@ static void child_execute(char **cmds, char **env)
             exit(1);
         }
     }
-    cmds = find_globbings(cmds, path);
-    if (!path || !cmds) {
+    cmds = find_globbings(cmds);
+    if (!path || !cmds)
         exit(1);
     }
     if (execve(path, cmds, env) == FAIL) {
