@@ -20,7 +20,7 @@ int builtin_fg(UNUSED char ***env, char **args)
         return FAIL;
     }
     pid = atoi(args[1]);
-    job = find_job_by_pid(jobs, pid);
+    job = find_job(jobs, pid);
     if (!job) {
         my_dprintf(STDERR_FD, "fg: %s: No such job\n", args[1]);
         return FAIL;

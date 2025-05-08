@@ -82,7 +82,7 @@ int get_next_job_number(job_t *jobs);
 int builtin_jobs(UNUSED char ***env, UNUSED char **args);
 int builtin_fg(UNUSED char ***env, char **args);
 int builtin_bg(UNUSED char ***env, char **args);
-job_t *find_job_by_pid(job_t **jobs, pid_t pid);
+job_t *find_job(job_t **jobs, pid_t pid);
 int put_job_in_foreground(job_t *job);
 int put_job_in_background(job_t *job);
 

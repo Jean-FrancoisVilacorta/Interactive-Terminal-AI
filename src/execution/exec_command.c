@@ -104,8 +104,9 @@ static void child_execute(char **cmds, char **env)
         }
     }
     cmds = find_globbings(cmds, path);
-    if (!path || !cmds)
+    if (!path || !cmds) {
         exit(1);
+    }
     if (execve(path, cmds, env) == FAIL) {
         free(path);
         exit(1);
@@ -119,7 +120,7 @@ static int execute_command(char *line, char ***env, int *status)
     int background = is_background(line);
 
     line = trim_background(line);
-    cmds = split_command_line(line, " \t");
+    cmds = split_command_line(line, " \t\r\n");
     if (!cmds || !cmds[0])
         return FAIL;
     if (exec_builtin(cmds, env) == SUCCESS)

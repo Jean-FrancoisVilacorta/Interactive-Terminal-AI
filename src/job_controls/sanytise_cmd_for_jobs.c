@@ -25,12 +25,12 @@ char *trim_background(char *cmd)
     return cmd;
 }
 
-job_t *find_job_by_pid(job_t **jobs, pid_t pid)
+job_t *find_job(job_t **jobs, pid_t pid)
 {
     job_t *current = *jobs;
 
     while (current) {
-        if (current->pid == pid)
+        if (current->pid == pid || current->number == pid)
             return current;
         current = current->next;
     }
