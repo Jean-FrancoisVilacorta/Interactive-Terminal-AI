@@ -135,7 +135,7 @@ int builtin_which(char ***env, char **commands);
 int builtin_where(char ***env, char **commands);
 int print_signal(int status);
 int execute_tree(bintree_t *tree, char ***env, int *status);
-char **find_globbings(char **cmds, char *path);
+char **find_globbings(char **cmds);
 
 static const builtin_t builtin_command[14] = {
     {"cd", &builtin_cd},
