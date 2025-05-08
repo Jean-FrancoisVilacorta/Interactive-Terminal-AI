@@ -106,7 +106,6 @@ static void child_execute(char **cmds, char **env)
     cmds = find_globbings(cmds);
     if (!path || !cmds)
         exit(1);
-    }
     if (execve(path, cmds, env) == FAIL) {
         free(path);
         exit(1);
