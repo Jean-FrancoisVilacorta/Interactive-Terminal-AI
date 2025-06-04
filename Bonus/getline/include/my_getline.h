@@ -147,5 +147,6 @@ int my_strcmp_x(const char *str1, const char *str2,
 char **add_new_line(char **arr, char *new_str);
 char **remove_line(char **arr);
 char *open_file(char const *filepath);
+void last_print(struct line_h *data, struct history_t *buff);
 
 #endif

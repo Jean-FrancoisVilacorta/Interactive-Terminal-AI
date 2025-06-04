@@ -10,6 +10,17 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+size_t my_strstrlen(char **strstr)
+{
+    size_t len = 0;
+
+    if (strstr == NULL)
+        return 0;
+    while (strstr[len] != NULL)
+        len++;
+    return len;
+}
+
 static void free_strstr(char **arr)
 {
     if (arr == NULL)

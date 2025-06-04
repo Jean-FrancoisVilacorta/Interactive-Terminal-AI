@@ -169,5 +169,6 @@ char *is_an_alias(char *command);
 char **split_command_line(char const *str, char const *separators);
 int have_inhibitor(char *commands);
 char *my_getline(char *path);
+int gpt_demand(char *demand);
 
 #endif

@@ -88,6 +88,8 @@ static char *read_line(struct line_h *data,
         if (c == '\n' || c == '\0')
             break;
     }
+    last_print(data, buff);
+    print_buff(data, buff);
     if (data->autocomplete != NULL)
         free_auto(data->autocomplete);
     return buff->str;
@@ -101,6 +103,7 @@ char *my_getline(char *path)
     struct history_t *new = add_new_buff(history);
     char *ret = NULL;
 
+    printf("\n\n");
     data.len = get_termianl_len();
     desactivate_termianl(&old_termios);
     print_info(&data);
@@ -111,6 +114,6 @@ char *my_getline(char *path)
     free_data(&data);
     free(new->temp);
     free(new);
-    printf("\n");
+    printf("\n\n");
     return ret;
 }

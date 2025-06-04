@@ -10,12 +10,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-static void display_prompt(void)
-{
-    if (isatty(STDIN_FILENO))
-        my_dprintf(STDOUT_FD, "$> ");
-}
-
 char *handle_exit(char *command)
 {
     char **array = my_str_to_word_arr(command, "|");
@@ -59,7 +53,6 @@ int shell_loop(char ***env, int is_tty)
     char *command = NULL;
     int status = 0;
     job_t **jobs = get_jobs_list();
-    size_t n;
     char path[140];
 
     if (getcwd(path, sizeof(path)) == NULL)

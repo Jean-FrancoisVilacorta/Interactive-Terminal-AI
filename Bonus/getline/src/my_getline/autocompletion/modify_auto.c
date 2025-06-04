@@ -56,7 +56,7 @@ void count_autocomplete(struct line_h *data, size_t lines)
 
 static size_t count_str(char *str, struct line_h *data)
 {
-    size_t len = my_strlen(data->usr) + 8;
+    size_t len = strlen(data->usr) + 8;
     size_t lines = 1;
 
     for (size_t i = 0; str[i] != '\0'; i++) {

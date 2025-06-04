@@ -19,7 +19,7 @@ static bool remove_last(struct history_t *buff,
 
     if (buff->temp != NULL)
         (*history) = change_the_buff(buff, *history);
-    len = my_strlen(buff->str);
+    len = strlen(buff->str);
     if (buff->str == NULL || len == 0)
         return true;
     if (buff->str[1] == '\0') {
@@ -36,7 +36,11 @@ static void remplace(struct history_t *history,
 {
     if (buff->temp != NULL)
         free(buff->temp);
-    buff->temp = my_strcpy(history->str);
+    // if (history->before == NULL) {
+    //     buff->temp = NULL;
+    //     return;
+    // }
+    buff->temp = strdup(history->str);
 }
 
 static struct history_t *key_up(struct history_t *history,
@@ -44,7 +48,7 @@ static struct history_t *key_up(struct history_t *history,
 {
     if (buff->str != NULL) {
         if (buff->str[0] == '\0' ||
-            my_strncmp(buff->str, history->str, strlen(buff->str)) == 0) {
+            strncmp(buff->str, history->str, strlen(buff->str)) == 0) {
             remplace(history, buff);
             return history;
         }
@@ -61,7 +65,7 @@ static struct history_t *key_down(struct history_t *history,
 {
     if (buff->str != NULL) {
         if (buff->str[0] == '\0' ||
-            my_strncmp(buff->str, history->str, strlen(buff->str)) == 0) {
+            strncmp(buff->str, history->str, strlen(buff->str)) == 0) {
             remplace(history, buff);
             return history;
         }

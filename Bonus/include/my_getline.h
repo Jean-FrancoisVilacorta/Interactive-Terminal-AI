@@ -97,6 +97,7 @@ struct history_t *add_new_buff(struct history_t *history);
 int get_termianl_len(void);
 void print_buff(struct line_h *data, struct history_t *buff);
 void print_line(struct line_h *data, struct history_t *buff);
+void last_print(struct line_h *data, struct history_t *buff);
 void print_info(struct line_h *data);
 void remove_lines(int n);
 int is_dir(const char *path);

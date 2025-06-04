@@ -47,7 +47,7 @@ static char *read_path_line(char *line)
     if (strncmp(line, "ref: refs/heads/", strlen("ref: refs/heads/")) == 0) {
         strncpy(branch, line + strlen("ref: refs/heads/"), len);
         branch[strcspn(branch, "\n")] = '\0';
-        return my_strcpy(branch);
+        return strdup(branch);
     }
     return "HEAD (detached)";
 }
@@ -107,7 +107,7 @@ static char *get_time(void)
 
     setlocale(LC_TIME, "en_us.utf8");
     strftime(act_time, sizeof(act_time), "%A %B %d, %H:%M", tm_info);
-    return my_strcpy(act_time);
+    return strdup(act_time);
 }
 
 static char *get_usr(void)

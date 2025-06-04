@@ -7,13 +7,14 @@
 
 #include "my_getline.h"
 #include <stdio.h>
+#include <string.h>
 
 struct history_t *add_new_buff(struct history_t *history)
 {
     struct history_t *new = malloc(sizeof(struct history_t));
 
     new->id = 0;
-    new->str = NULL;
+    new->str = strdup("\0");
     new->before = NULL;
     new->temp = NULL;
     new->next = history;

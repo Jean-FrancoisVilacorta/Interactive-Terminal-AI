@@ -10,6 +10,7 @@
 #include <sys/stat.h>
 #include <stdlib.h>
 #include "my_getline.h"
+#include "stdio.h"
 
 static int file_size(char const *filepath)
 {
@@ -28,7 +29,7 @@ static int verify_first_errors(int fd, int filesize)
         return -1;
     }
     if (filesize == ERROR_INT || filesize == 0) {
-        my_dputstr(2, "[ERROR] Unable to get file size\n");
+        dprintf(2, "[ERROR] Unable to get file size\n");
         return -1;
     }
     return SUCCESS;
@@ -45,12 +46,12 @@ char *open_file(char const *filepath)
         return NULL;
     buffer = malloc(sizeof(char) * filesize + 1);
     if (buffer == NULL) {
-        my_dputstr(2, "[ERROR] Unable to allocate memory\n");
+        dprintf(2, "[ERROR] Unable to allocate memory\n");
         return NULL;
     }
     line_size = read(fd, buffer, filesize);
     if (line_size == (size_t)-1) {
-        my_dputstr(2, "[ERROR] Unable to read file\n");
+        dprintf(2, "[ERROR] Unable to read file\n");
         return NULL;
     }
     buffer[filesize] = '\0';

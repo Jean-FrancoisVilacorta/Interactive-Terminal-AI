@@ -7,7 +7,7 @@
 
 SRC =	src/my_getline/my_getline.c					\
 	src/my_getline/window/get_data.c				\
-	src/my_getline/window/print_info.c				\
+	# src/my_getline/window/print_info.c				\
 	src/my_getline/window/window_data.c				\
 	src/my_getline/window/key_enter.c				\
 	src/my_getline/window/special_keys.c			\
@@ -22,17 +22,17 @@ SRC =	src/my_getline/my_getline.c					\
 	src/AI/gpt_demand.c							\
 	src/AI/key/verify_key.c							\
 	src/AI/key/create_api_key.c						\
-	lib/src/my_strlen.c			\
 	lib/src/my_str_to_word_array.c	\
-	lib/src/my_strcmp.c				\
-	lib/src/my_dputstr.c			\
-	lib/src/my_strcpy.c				\
+	lib/src/open_file.c				\
 	lib/src/my_strstrcpy.c			\
 	lib/src/my_getline.c			\
 	lib/src/my_realloc.c			\
-	lib/src/my_str_cmb.c			\
 	lib/src/add_new_line.c			\
-	lib/src/open_file.c				\
+	lib/src/my_strcmp.c				\
+	lib/src/my_dputstr.c			\
+	lib/src/my_strcpy.c				\
+	lib/src/my_str_cmb.c			\
+	lib/src/my_strlen.c			\
 
 OBJ = $(SRC:.c=.o)
 

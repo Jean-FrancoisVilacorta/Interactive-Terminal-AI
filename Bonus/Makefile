@@ -6,34 +6,34 @@
 ##
 
 SRC = 	main.c						\
-		getline/src/my_getline/my_getline.c					\
-		getline/src/my_getline/window/get_data.c				\
-		getline/src/my_getline/window/print_info.c				\
-		getline/src/my_getline/window/window_data.c				\
-		getline/src/my_getline/window/key_enter.c				\
-		getline/src/my_getline/window/special_keys.c			\
-		getline/src/my_getline/history/get_history.c				\
-		getline/src/my_getline/history/replace_file.c				\
-		getline/src/my_getline/autocompletion/get_files.c				\
-		getline/src/my_getline/autocompletion/modify_auto.c				\
-		getline/src/my_getline/autocompletion/autocomplete.c			\
-		getline/src/my_getline/autocompletion/search_files.c			\
-		getline/src/my_getline/autocompletion/print_autocompletion.c	\
-		getline/src/my_getline/autocompletion/change_column.c			\
-		getline/src/AI/gpt_demand.c							\
-		getline/src/AI/key/verify_key.c							\
-		getline/src/AI/key/create_api_key.c						\
-		getline/lib/src/my_strlen.c			\
-		getline/lib/src/my_str_to_word_array.c	\
-		getline/lib/src/my_strcmp.c				\
-		getline/lib/src/my_dputstr.c			\
-		getline/lib/src/my_strcpy.c				\
-		getline/lib/src/my_strstrcpy.c			\
-		getline/lib/src/my_getline.c			\
-		getline/lib/src/my_realloc.c			\
-		getline/lib/src/my_str_cmb.c			\
-		getline/lib/src/add_new_line.c			\
-		getline/lib/src/open_file.c				\
+		$(addprefix getline/src/,			\
+		$(addprefix my_getline/,			\
+		my_getline.c					\
+		window/get_data.c				\
+		window/print_info.c				\
+		window/window_data.c				\
+		window/key_enter.c				\
+		window/special_keys.c			\
+		history/get_history.c				\
+		history/replace_file.c				\
+		autocompletion/get_files.c				\
+		autocompletion/modify_auto.c				\
+		autocompletion/autocomplete.c			\
+		autocompletion/search_files.c			\
+		autocompletion/print_autocompletion.c	\
+		autocompletion/change_column.c)			\
+		$(addprefix AI/,			\
+		gpt_demand.c							\
+		key/verify_key.c							\
+		key/create_api_key.c))						\
+		$(addprefix getline/lib/src/,			\
+		my_str_to_word_array.c	\
+		add_new_line.c			\
+		open_file.c				\
+		my_strstrcpy.c			\
+		my_getline.c			\
+		my_realloc.c			\
+		my_str_cmb.c)			\
 		$(addprefix src/,			\
 		shell_loop.c				\
 		print_signal.c				\
